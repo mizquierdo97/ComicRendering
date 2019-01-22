@@ -1,0 +1,180 @@
+fileFormatVersion: 2
+guid: 0922db97582abac4a9e3618600870c5a
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: Camera
+    100002: Directional Light
+    100004: Ivysaur_1_low
+    100006: Ivysaur_1_low_outline
+    100008: Ivysaur_2_low
+    100010: Ivysaur_2_low_outline
+    100012: Ivysaur_3_low
+    100014: Ivysaur_3_low_outline
+    100016: Ivysaur_4_low
+    100018: Ivysaur_4_low_outline
+    100020: Ivysaur_5_low
+    100022: Ivysaur_5_low_outline
+    100024: Ivysaur_6_low
+    100026: Ivysaur_6_low_outline
+    100028: Ivysaur_7_low
+    100030: Ivysaur_7_low_outline
+    100032: Ivysaur_8_low
+    100034: Ivysaur_8_low_outline
+    100036: //RootNode
+    400000: Camera
+    400002: Directional Light
+    400004: Ivysaur_1_low
+    400006: Ivysaur_1_low_outline
+    400008: Ivysaur_2_low
+    400010: Ivysaur_2_low_outline
+    400012: Ivysaur_3_low
+    400014: Ivysaur_3_low_outline
+    400016: Ivysaur_4_low
+    400018: Ivysaur_4_low_outline
+    400020: Ivysaur_5_low
+    400022: Ivysaur_5_low_outline
+    400024: Ivysaur_6_low
+    400026: Ivysaur_6_low_outline
+    400028: Ivysaur_7_low
+    400030: Ivysaur_7_low_outline
+    400032: Ivysaur_8_low
+    400034: Ivysaur_8_low_outline
+    400036: //RootNode
+    2000000: Camera
+    2100000: Pokemon
+    2100002: Outline
+    2300000: Ivysaur_1_low
+    2300002: Ivysaur_1_low_outline
+    2300004: Ivysaur_2_low
+    2300006: Ivysaur_2_low_outline
+    2300008: Ivysaur_3_low
+    2300010: Ivysaur_3_low_outline
+    2300012: Ivysaur_4_low
+    2300014: Ivysaur_4_low_outline
+    2300016: Ivysaur_5_low
+    2300018: Ivysaur_5_low_outline
+    2300020: Ivysaur_6_low
+    2300022: Ivysaur_6_low_outline
+    2300024: Ivysaur_7_low
+    2300026: Ivysaur_7_low_outline
+    2300028: Ivysaur_8_low
+    2300030: Ivysaur_8_low_outline
+    3300000: Ivysaur_1_low
+    3300002: Ivysaur_1_low_outline
+    3300004: Ivysaur_2_low
+    3300006: Ivysaur_2_low_outline
+    3300008: Ivysaur_3_low
+    3300010: Ivysaur_3_low_outline
+    3300012: Ivysaur_4_low
+    3300014: Ivysaur_4_low_outline
+    3300016: Ivysaur_5_low
+    3300018: Ivysaur_5_low_outline
+    3300020: Ivysaur_6_low
+    3300022: Ivysaur_6_low_outline
+    3300024: Ivysaur_7_low
+    3300026: Ivysaur_7_low_outline
+    3300028: Ivysaur_8_low
+    3300030: Ivysaur_8_low_outline
+    4300000: Ivysaur_3_low
+    4300002: Ivysaur_4_low_outline
+    4300004: Ivysaur_8_low
+    4300006: Ivysaur_4_low
+    4300008: Ivysaur_2_low
+    4300010: Ivysaur_3_low_outline
+    4300012: Ivysaur_7_low
+    4300014: Ivysaur_7_low_outline
+    4300016: Ivysaur_2_low_outline
+    4300018: Ivysaur_6_low_outline
+    4300020: Ivysaur_5_low_outline
+    4300022: Ivysaur_6_low
+    4300024: Ivysaur_8_low_outline
+    4300026: Ivysaur_5_low
+    4300028: Ivysaur_1_low
+    4300030: Ivysaur_1_low_outline
+    7400000: Take 001
+    9500000: //RootNode
+    10800000: Directional Light
+    2186277476908879412: ImportLogs
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
