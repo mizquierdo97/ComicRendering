@@ -44,7 +44,14 @@
 
 	fixed4 frag(v2f i) : SV_Target
 	{
-		return lerp(tex2D(_MainTex, i.uv.xy), _OutlineColor ,tex2D(_OutlineTex, i.uv.xy));
+		float2 texel = _MainTex_TexelSize * 5;
+		float depth = 1- tex2D(_CameraDepth, i.uv).r;
+		depth = max(depth, 1 - tex2D(_CameraDepth, i.uv + (1,0) * texel).r); 
+		depth = max(depth, 1 - tex2D(_CameraDepth, i.uv + (-1, 0) * texel).r);
+		depth = max(depth, 1 - tex2D(_CameraDepth, i.uv + (0, 1) * texel).r);
+		depth = max(depth, 1 - tex2D(_CameraDepth, i.uv + (0, -1) * texel).r);
+
+		return lerp(tex2D(_MainTex, i.uv.xy), _OutlineColor, tex2D(_OutlineTex, i.uv.xy) * depth);
 	}
 		ENDCG
 

@@ -119,7 +119,7 @@
 	}
 
 	float4 sobelDepth(sampler2D tex, float2 uv, float width) {
-		float depth = tex2D(_CameraDepth, uv);
+		float depth = tex2D(tex, uv);
 		float2 delta = float2(width * _MainTex_TexelSize.x , width * _MainTex_TexelSize.y );
 
 		float hr = 0.0;
@@ -145,9 +145,18 @@
 		vt +=(tex2D(tex, (uv + float2(0.0, 1.0) * delta)).r) *	-2.0;
 		vt +=(tex2D(tex, (uv + float2(1.0, 1.0) * delta)).r) *	-1.0;
 
-		float ret = 0.0;
+		float ret = depth - (tex2D(tex, (uv + float2(1.0, 0.0) * delta)).r);
+		ret += depth - (tex2D(tex, (uv + float2(-1.0, 0.0) * delta)).r);
+		ret += depth - (tex2D(tex, (uv + float2(0.0, 1.0) * delta)).r);
+		ret += depth - (tex2D(tex, (uv + float2(0.0, -1.0) * delta)).r);
+		ret = 1 - ret;
+		ret = min(ret,1);
+		//ret = max(ret, 0);
+		ret = 1 - ret;
+
+		/*float ret = 0.0;
 		float intensityR = sqrt(hr*hr + vt * vt);	
-		ret = intensityR;
+		ret = intensityR;*/
 		return ret;
 	}
 

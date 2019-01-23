@@ -34,6 +34,7 @@ public class CameraRenderScript : MonoBehaviour
     public Texture shadowTexture;
 
     public Color lineColor;
+    public Camera cam;
     public float ColWidth = 0.001f;
     public float NormWidth = 0.001f;
     public float DepthWidth = 0.001f;
@@ -64,21 +65,25 @@ public class CameraRenderScript : MonoBehaviour
     RenderTexture noiseReductionTarget;
     RenderTexture blurTarget;
     RenderTexture final;
+    RenderTexture objectsNormal;
     float timer = 0.0f;
     [Range(10,60)]
     public int frames = 25;
+
+    RenderBuffer[] mrtRB = new RenderBuffer[1];
     void OnEnable()
     {
-        GetComponent<Camera>().depthTextureMode = DepthTextureMode.DepthNormals;
-        GetComponent<Camera>().depthTextureMode |= DepthTextureMode.Depth;
+        cam = GetComponent<Camera>();
+        cam.depthTextureMode = DepthTextureMode.DepthNormals;
+        cam.depthTextureMode |= DepthTextureMode.Depth;
         int width = Screen.width * 2;
         int height = Screen.height * 2;
 
 
-        depthTarget = new RenderTexture(width, height, 32, RenderTextureFormat.ARGB32);
+        depthTarget = new RenderTexture(width, height, 32, RenderTextureFormat.RFloat);
         depthTarget.Create();
 
-        colorTarget = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
+        colorTarget = new RenderTexture(width, height, 16, RenderTextureFormat.ARGBFloat);
         colorTarget.Create();
 
         normalsTarget = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
@@ -105,6 +110,9 @@ public class CameraRenderScript : MonoBehaviour
         noiseReductionTarget = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
         noiseReductionTarget.Create();
 
+        objectsNormal = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
+        objectsNormal.Create();
+
         blurTarget = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
         blurTarget.Create();
 
@@ -116,6 +124,8 @@ public class CameraRenderScript : MonoBehaviour
     {
         timer += Time.deltaTime;
         Shader.SetGlobalTexture("_ShadowTexture", shadowTexture);
+        cam.SetTargetBuffers(objectsNormal.colorBuffer, objectsNormal.depthBuffer);
+        cam.RenderWithShader(depthMat.shader, "");
        // if (timer >= 1.0f / (float)frames)
         {
             timer = 0.0f;
@@ -135,13 +145,13 @@ public class CameraRenderScript : MonoBehaviour
 
             //Remove Noise-------------------------------------
             noiseReductionMat.SetTexture("_CameraDepth", depthTarget);
-            noiseReductionMat.SetInt("_UsingDepth", 0);
+            noiseReductionMat.SetInt("_UsingDepth", 1);
             Graphics.Blit(normalsTarget, blurNormalsTarget, noiseReductionMat);
             //-------------------------------------------------------
 
             //Remove Noise-------------------------------------
             noiseReductionMat.SetTexture("_CameraDepth", depthTarget);
-            noiseReductionMat.SetInt("_UsingDepth", 0);
+            noiseReductionMat.SetInt("_UsingDepth", 1);
             Graphics.Blit(colorTarget, blurColorTarget, noiseReductionMat);
             //-------------------------------------------------------
 

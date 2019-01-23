@@ -47,8 +47,8 @@
 				if (_UsingDepth == 0)
 				{
 					depth = tex2D(_CameraDepth, uv).r ;
-					depth = pow(depth, 1) * 20;
-					depth = max(0, 0);
+					depth = pow(depth, 1) * 10;
+					depth = max(depth, 0);
 				}
 
 				if (_UsingDepth == 1)
