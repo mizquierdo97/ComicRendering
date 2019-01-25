@@ -17,6 +17,7 @@ public class CameraRenderScript : MonoBehaviour
         FirstBlur,
         SecondBlur,
         Thin,
+        ObjectNormals,
     }
 
     public RenderTarget mode = RenderTarget.Final;
@@ -65,7 +66,10 @@ public class CameraRenderScript : MonoBehaviour
     RenderTexture noiseReductionTarget;
     RenderTexture blurTarget;
     RenderTexture final;
-    RenderTexture objectsNormal;
+
+    public ObjectNormalsRender objNormScript;
+    RenderTexture objectNormals;
+
     float timer = 0.0f;
     [Range(10,60)]
     public int frames = 25;
@@ -110,22 +114,21 @@ public class CameraRenderScript : MonoBehaviour
         noiseReductionTarget = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
         noiseReductionTarget.Create();
 
-        objectsNormal = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
-        objectsNormal.Create();
-
         blurTarget = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
         blurTarget.Create();
 
         final = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
         final.Create();
+
+        objectNormals = objNormScript.objectNormals;
+
     }
   
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
         timer += Time.deltaTime;
         Shader.SetGlobalTexture("_ShadowTexture", shadowTexture);
-        cam.SetTargetBuffers(objectsNormal.colorBuffer, objectsNormal.depthBuffer);
-        cam.RenderWithShader(depthMat.shader, "");
+
        // if (timer >= 1.0f / (float)frames)
         {
             timer = 0.0f;
@@ -146,7 +149,7 @@ public class CameraRenderScript : MonoBehaviour
             //Remove Noise-------------------------------------
             noiseReductionMat.SetTexture("_CameraDepth", depthTarget);
             noiseReductionMat.SetInt("_UsingDepth", 1);
-            Graphics.Blit(normalsTarget, blurNormalsTarget, noiseReductionMat);
+            Graphics.Blit(objectNormals, blurNormalsTarget, noiseReductionMat);
             //-------------------------------------------------------
 
             //Remove Noise-------------------------------------
@@ -203,8 +206,7 @@ public class CameraRenderScript : MonoBehaviour
             Graphics.Blit(blurColorTarget, final, finalMat);
             //-------------------------------------------------------
         }
-
-        switch(mode)
+        switch (mode)
         {
             case RenderTarget.Final:
                 {
@@ -244,6 +246,11 @@ public class CameraRenderScript : MonoBehaviour
             case RenderTarget.SecondBlur:
                 {
                     Graphics.Blit(blurTarget, destination);
+                    break;
+                }
+            case RenderTarget.ObjectNormals:
+                {
+                    Graphics.Blit(objectNormals, destination);
                     break;
                 }
         }
