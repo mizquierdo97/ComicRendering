@@ -6,7 +6,9 @@ public class ObjectNormalsRender : MonoBehaviour {
 
     Camera cam;
     public RenderTexture objectNormals;
+    public RenderTexture objectDepth;
     public Shader ObjectNormalsShader;
+    public Shader ObjectDepthShader;
     // Use this for initialization
     void OnEnable()
     {
@@ -22,7 +24,10 @@ public class ObjectNormalsRender : MonoBehaviour {
         //objectNormals.Create();
         cam.targetTexture = objectNormals;
         cam.SetReplacementShader(ObjectNormalsShader, null);
-        
+
+        GetComponent<Camera>().depthTextureMode = DepthTextureMode.DepthNormals;
+        GetComponent<Camera>().depthTextureMode |= DepthTextureMode.Depth;
+
     }
     void Awake()
     {
@@ -30,6 +35,11 @@ public class ObjectNormalsRender : MonoBehaviour {
     }
     // Update is called once per frame
     void Update () {
+        cam.targetTexture = objectNormals;
+        cam.SetReplacementShader(ObjectNormalsShader, null);
+        cam.Render();
+        cam.targetTexture = objectDepth;
+        cam.SetReplacementShader(ObjectDepthShader, "RenderType");
         cam.Render();
     }
 }

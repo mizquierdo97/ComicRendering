@@ -1,8 +1,8 @@
-﻿Shader "Hidden/NormalsShader"
+﻿Shader "Hidden/CharacterNormalsShader"
 {
 	Properties
 	{
-		_MainTex ("Texture", 2D) = "white" {}
+		_MainTex("Texture", 2D) = "white" {}
 	}
 		CGINCLUDE
 #include "UnityCG.cginc"
@@ -13,11 +13,7 @@
 
 	sampler2D _CameraDepthNormalsTexture;
 	uniform sampler2D_float _CameraDepthTexture;
-	uniform sampler2D _CameraDepth;
-	uniform sampler2D _CharactersNormals;
-	uniform sampler2D _MapNormals;
-	uniform sampler2D _CharacterDepth;
-	uniform sampler2D _MapDepth;
+
 
 	struct appdata
 	{
@@ -41,26 +37,13 @@
 
 	fixed4 frag(v2f i) : SV_Target
 	{
-		//return tex2D(_MapNormals, i.uv);
-	float characterDepth = tex2D(_CharacterDepth, i.uv).r;
-	float mapDepth = tex2D(_MapDepth, i.uv).r;
-
-	if (mapDepth < characterDepth)
-	{
-		return tex2D(_MapNormals, i.uv);
-	}
-	else
-	{
-		return tex2D(_CharactersNormals, i.uv);
-	}
-		float4 normTex = tex2D(_CameraDepthNormalsTexture, i.uv);
-		float depth = tex2D(_CameraDepth, i.uv).x;
+		float4 normTex = tex2D(_CameraDepthNormalsTexture, i.uv);		
 		float3 normals;
 
 		normals.r = normTex.r;
 		normals.g = normTex.g;
 		normals.b = normTex.b;
-	
+
 		float4 ret = float4(normals.r, normals.g, normals.b, 1);
 		return ret;
 	}

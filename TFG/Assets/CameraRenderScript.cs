@@ -59,16 +59,17 @@ public class CameraRenderScript : MonoBehaviour
     RenderTexture normalsTarget;
     RenderTexture blurNormalsTarget;
     RenderTexture blurColorTarget;
-    RenderTexture gaussianTarget;
     RenderTexture sobelTargetColor;
     RenderTexture thinLinesTarget;
-    RenderTexture expandTarget;
     RenderTexture noiseReductionTarget;
     RenderTexture blurTarget;
     RenderTexture final;
 
+    public RenderTexture characterNormals;
+    public RenderTexture characterDepth;
     public ObjectNormalsRender objNormScript;
     RenderTexture objectNormals;
+    RenderTexture objectDepth;
 
     float timer = 0.0f;
     [Range(10,60)]
@@ -99,14 +100,8 @@ public class CameraRenderScript : MonoBehaviour
         blurColorTarget = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
         blurColorTarget.Create();
 
-        gaussianTarget = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
-        gaussianTarget.Create();
-
         sobelTargetColor = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
         sobelTargetColor.Create();
-
-        expandTarget = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
-        expandTarget.Create();
 
         thinLinesTarget = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
         thinLinesTarget.Create();
@@ -121,6 +116,7 @@ public class CameraRenderScript : MonoBehaviour
         final.Create();
 
         objectNormals = objNormScript.objectNormals;
+        objectDepth = objNormScript.objectDepth;
 
     }
   
@@ -143,13 +139,17 @@ public class CameraRenderScript : MonoBehaviour
 
             //Normals Texture-------------------------------------
             normalsMat.SetTexture("_CameraDepth", depthTarget);
+            normalsMat.SetTexture("_CharactersNormals", characterNormals);
+            normalsMat.SetTexture("_MapNormals", objectNormals);
+            normalsMat.SetTexture("_CharacterDepth", characterDepth);
+            normalsMat.SetTexture("_MapDepth", objectDepth);
             Graphics.Blit(colorTarget, normalsTarget, normalsMat);
             //--------------------------------------------------
 
             //Remove Noise-------------------------------------
             noiseReductionMat.SetTexture("_CameraDepth", depthTarget);
             noiseReductionMat.SetInt("_UsingDepth", 1);
-            Graphics.Blit(objectNormals, blurNormalsTarget, noiseReductionMat);
+            Graphics.Blit(normalsTarget, blurNormalsTarget, noiseReductionMat);
             //-------------------------------------------------------
 
             //Remove Noise-------------------------------------
@@ -157,15 +157,6 @@ public class CameraRenderScript : MonoBehaviour
             noiseReductionMat.SetInt("_UsingDepth", 1);
             Graphics.Blit(colorTarget, blurColorTarget, noiseReductionMat);
             //-------------------------------------------------------
-
-
-            ////Probably not needed
-            ////Gaussian------------------------------------------
-            //gaussianProcessMat.SetFloat("_Intensity", imageBlurInt);
-            //gaussianProcessMat.SetTexture("_CameraDepth", depthTarget);
-            //Graphics.Blit(source, gaussianTarget, gaussianProcessMat);
-            //Graphics.Blit(normalsTarget, blurNormalsTarget, gaussianProcessMat);
-            ////---------------------------------------------------
 
             //SOBEL--------------------------------------------------
             sobelProcessMat.SetTexture("_CameraDepth", depthTarget);
@@ -186,7 +177,6 @@ public class CameraRenderScript : MonoBehaviour
             //noiseReductionMat.SetInt("_UsingDepth", 1);
             Graphics.Blit(sobelTargetColor, thinLinesTarget, thinLinesMat);
             //-------------------------------------------------------
-
 
             //Remove Noise-------------------------------------
             noiseReductionMat.SetTexture("_CameraDepth", depthTarget);
@@ -238,11 +228,6 @@ public class CameraRenderScript : MonoBehaviour
                     Graphics.Blit(blurNormalsTarget, destination);
                     break;
                 }
-            case RenderTarget.FirstBlur:
-                {
-                    Graphics.Blit(gaussianTarget, destination);
-                    break;
-                }
             case RenderTarget.SecondBlur:
                 {
                     Graphics.Blit(blurTarget, destination);
@@ -250,7 +235,7 @@ public class CameraRenderScript : MonoBehaviour
                 }
             case RenderTarget.ObjectNormals:
                 {
-                    Graphics.Blit(objectNormals, destination);
+                    Graphics.Blit(characterNormals, destination);
                     break;
                 }
         }

@@ -1,6 +1,8 @@
-﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
-Shader "Custom/NewSurfaceShader" {
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Custom/ObjectDepthShader" {
 	Properties{
 	  _MainTex("Texture", 2D) = "white" {}
 	_Color("Color", Color) = (1,1,1,1)
@@ -15,8 +17,7 @@ Shader "Custom/NewSurfaceShader" {
 		  };
 		  void vert(inout appdata_full v, out Input o) {
 			  UNITY_INITIALIZE_OUTPUT(Input,o);
-			  float3 baseWorldPos = mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz;
-			  o.customColor =  v.normal + normalize((baseWorldPos) % 1);
+			  o.customColor =-mul(UNITY_MATRIX_MV, v.vertex).z *_ProjectionParams.w;
 		  }
 		  sampler2D _MainTex;
 		  void surf(Input IN, inout SurfaceOutput o) {
