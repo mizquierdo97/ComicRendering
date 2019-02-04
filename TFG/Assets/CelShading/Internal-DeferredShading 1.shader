@@ -69,7 +69,7 @@ half4 CalculateLight (unity_v2f_deferred i)
 	if (NdotL <= 0.5)
 	{
 		float pattern = tex2D(_ShadowTexture, uv).r;
-		if (NdotL > -0)
+		if (NdotL > 0)
 		{
 			if (pattern < 0.5)
 			{
@@ -81,7 +81,7 @@ half4 CalculateLight (unity_v2f_deferred i)
 
 		if (NdotL <= 0)
 		{
-			NdotL = 0.8;
+			NdotL = 0.9;
 		}
 	}
 	

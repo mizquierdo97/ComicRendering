@@ -13,6 +13,7 @@ Shader "Custom/ObjectNormalShader" {
 			  float2 uv_MainTex;
 			  float3 customColor;
 		  };
+
 		  void vert(inout appdata_full v, out Input o) {
 			  UNITY_INITIALIZE_OUTPUT(Input,o);
 			  float3 baseWorldPos = mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz;
@@ -24,6 +25,5 @@ Shader "Custom/ObjectNormalShader" {
 			  o.Albedo = IN.customColor;
 		  }
 		  ENDCG
-	}
-		Fallback "Diffuse"
+	}	
 }

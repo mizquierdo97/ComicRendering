@@ -48,7 +48,7 @@
 				{
 					depth = tex2D(_CameraDepth, uv).r ;
 					depth = pow(depth, 1) * 10;
-					depth = max(depth, 0);
+					//depth = max(depth, 0);
 				}
 
 				if (_UsingDepth == 1)
@@ -92,6 +92,8 @@
 				t25(10, 14, 6, 7, 10, 12, 6, 10, 6, 17);
 				t25(12, 17, 7, 17, 7, 10, 12, 18, 7, 12);
 				t24(10, 18, 12, 20, 10, 20, 10, 12);
+
+				return arr[_Time.x];
 				return arr[((mSize * mSize)-1)/2];
 				if (onesCount >= zeroCount)
 					return col;
