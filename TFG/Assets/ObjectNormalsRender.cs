@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectNormalsRender : MonoBehaviour {
+public class ObjectNormalsRender : MonoBehaviour
+{
 
     Camera cam;
     public RenderTexture objectNormals;
     public RenderTexture objectDepth;
     public Shader ObjectNormalsShader;
     public Shader ObjectDepthShader;
+    public Material ObjectDepthMat;
     // Use this for initialization
     void OnEnable()
     {
@@ -27,19 +29,24 @@ public class ObjectNormalsRender : MonoBehaviour {
 
         GetComponent<Camera>().depthTextureMode = DepthTextureMode.DepthNormals;
         GetComponent<Camera>().depthTextureMode |= DepthTextureMode.Depth;
-
+        cam.targetTexture = objectNormals;
+        cam.SetReplacementShader(ObjectNormalsShader, null);
     }
     void Awake()
     {
-       
+
     }
     // Update is called once per frame
-    void Update () {
-        cam.targetTexture = objectNormals;
-        cam.SetReplacementShader(ObjectNormalsShader, null);
-        cam.Render();
-        cam.targetTexture = objectDepth;
-        cam.SetReplacementShader(ObjectDepthShader, "RenderType");
-        cam.Render();
+    void Update()
+    {
+        //cam.targetTexture = objectDepth;
+        //cam.SetReplacementShader(ObjectDepthShader, "RenderType");
+        //cam.Render();
+    }
+
+    private void OnRenderImage(RenderTexture source, RenderTexture destination)
+    {
+        Graphics.Blit(source, objectDepth, ObjectDepthMat);
+        Graphics.Blit(source, destination);
     }
 }

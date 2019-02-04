@@ -76,7 +76,7 @@ public class CameraRenderScript : MonoBehaviour
     public int frames = 25;
 
     RenderBuffer[] mrtRB = new RenderBuffer[1];
-    void OnEnable()
+    void Start()
     {
         cam = GetComponent<Camera>();
         cam.depthTextureMode = DepthTextureMode.DepthNormals;
@@ -124,8 +124,7 @@ public class CameraRenderScript : MonoBehaviour
     {
         timer += Time.deltaTime;
         Shader.SetGlobalTexture("_ShadowTexture", shadowTexture);
-
-       // if (timer >= 1.0f / (float)frames)
+        // if (timer >= 1.0f / (float)frames)
         {
             timer = 0.0f;
 
