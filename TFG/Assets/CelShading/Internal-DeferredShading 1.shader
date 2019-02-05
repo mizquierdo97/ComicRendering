@@ -81,7 +81,7 @@ half4 CalculateLight (unity_v2f_deferred i)
 
 		if (NdotL <= 0)
 		{
-			NdotL = 0.9;
+			NdotL = 0.8;
 		}
 	}
 	

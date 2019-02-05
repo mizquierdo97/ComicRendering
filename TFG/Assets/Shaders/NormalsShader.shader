@@ -2,7 +2,7 @@
 {
 	Properties
 	{
-		_MainTex ("Texture", 2D) = "white" {}
+		_MainTex("Texture", 2D) = "white" {}
 	}
 		CGINCLUDE
 #include "UnityCG.cginc"
@@ -41,7 +41,6 @@
 
 	fixed4 frag(v2f i) : SV_Target
 	{
-		//return tex2D(_MapNormals, i.uv);
 	float characterDepth = tex2D(_CharacterDepth, i.uv).r;
 	float mapDepth = tex2D(_MapDepth, i.uv).r;
 
@@ -53,16 +52,6 @@
 	{
 		return tex2D(_CharactersNormals, i.uv);
 	}
-		float4 normTex = tex2D(_CameraDepthNormalsTexture, i.uv);
-		float depth = tex2D(_CameraDepth, i.uv).x;
-		float3 normals;
-
-		normals.r = normTex.r;
-		normals.g = normTex.g;
-		normals.b = normTex.b;
-	
-		float4 ret = float4(normals.r, normals.g, normals.b, 1);
-		return ret;
 	}
 		ENDCG
 
@@ -70,8 +59,6 @@
 		SubShader
 	{
 		Pass{
-			//Cull Off ZWrite Off ZTest Always
-
 			ZTest Always Cull Off ZWrite Off
 
 
