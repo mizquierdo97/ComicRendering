@@ -76,8 +76,8 @@ public class CameraRenderScript : MonoBehaviour
         cam = GetComponent<Camera>();
         cam.depthTextureMode = DepthTextureMode.DepthNormals;
         cam.depthTextureMode |= DepthTextureMode.Depth;
-        int width = Screen.width * 2;
-        int height = Screen.height * 2;
+        int width = Screen.width;
+        int height = Screen.height;
 
 
         depthTarget = new RenderTexture(width, height, 32, RenderTextureFormat.RFloat);
