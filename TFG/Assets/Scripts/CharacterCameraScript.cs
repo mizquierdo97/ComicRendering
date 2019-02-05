@@ -3,35 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
-public class CharacterCameraScript : MonoBehaviour {
+public class CharacterCameraScript : MonoBehaviour
+{
 
-	
-    public enum RenderTarget
-    {
-        Final = 0,
-        Color = 1,
-        Depth,
-        Normals,
-        Sobel,
-        FirstBlur,
-        SecondBlur,
-        Thin,
-        ObjectNormals,
-    }
-
-    public RenderTarget mode = RenderTarget.Final;
     public Material normalsMat;
     public Material depthMat;
 
     public Shader ToonShader;
     public Texture shadowTexture;
 
-    public Color lineColor;
     public Camera cam;
-    public float ColWidth = 0.001f;
-    public float NormWidth = 0.001f;
-    public float DepthWidth = 0.001f;
-
 
     public RenderTexture normalsTarget;
     public RenderTexture depthTarget;
@@ -40,8 +21,13 @@ public class CharacterCameraScript : MonoBehaviour {
     {
         cam = GetComponent<Camera>();
         cam.depthTextureMode = DepthTextureMode.DepthNormals;
-        int width = Screen.width * 2;
-        int height = Screen.height * 2;
+        int width = Screen.width;
+        int height = Screen.height;
+
+        normalsTarget = new RenderTexture(width, height, 16, RenderTextureFormat.ARGBFloat);
+        cam.targetTexture = normalsTarget;
+
+        depthTarget = new RenderTexture(width, height, 32, RenderTextureFormat.RFloat);
     }
 
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
@@ -49,7 +35,7 @@ public class CharacterCameraScript : MonoBehaviour {
         //Normals Texture-------------------------------------
         Graphics.Blit(source, destination, normalsMat);
         //--------------------------------------------------
-        //Normals Texture-------------------------------------
+        //Depth Texture-------------------------------------
         Graphics.Blit(source, depthTarget, depthMat);
         //--------------------------------------------------
     }

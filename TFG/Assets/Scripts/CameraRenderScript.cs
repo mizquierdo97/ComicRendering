@@ -61,8 +61,7 @@ public class CameraRenderScript : MonoBehaviour
     RenderTexture blurTarget;
     RenderTexture final;
 
-    public RenderTexture characterNormals;
-    public RenderTexture characterDepth;
+    public CharacterCameraScript charCameraScript;
     public ObjectNormalsRender objNormScript;
     RenderTexture objectNormals;
     RenderTexture objectDepth;
@@ -128,9 +127,9 @@ public class CameraRenderScript : MonoBehaviour
 
             //Normals Texture-------------------------------------
             normalsMat.SetTexture("_CameraDepth", depthTarget);
-            normalsMat.SetTexture("_CharactersNormals", characterNormals);
+            normalsMat.SetTexture("_CharactersNormals", charCameraScript.normalsTarget);
             normalsMat.SetTexture("_MapNormals", objectNormals);
-            normalsMat.SetTexture("_CharacterDepth", characterDepth);
+            normalsMat.SetTexture("_CharacterDepth", charCameraScript.depthTarget);
             normalsMat.SetTexture("_MapDepth", objectDepth);
             Graphics.Blit(colorTarget, normalsTarget, normalsMat);
             //--------------------------------------------------
@@ -202,7 +201,7 @@ public class CameraRenderScript : MonoBehaviour
                 }
             case RenderTarget.ObjectNormals:
                 {
-                    Graphics.Blit(characterNormals, destination);
+                    Graphics.Blit(objectNormals, destination);
                     break;
                 }
         }       

@@ -184,7 +184,11 @@
 		else 
 			depthSobel = 1;
 
-		return min(colSobel + normSobel + depthSobel , 1);
+		colSobel = min(colSobel, 1);
+		normSobel = min(normSobel, 1);
+		depthSobel = min(depthSobel, 1);
+		return min(colSobel + normSobel + depthSobel, 1);
+		return float4(colSobel.x, normSobel.x, depthSobel.x , 1);
 
 	}
 		ENDCG

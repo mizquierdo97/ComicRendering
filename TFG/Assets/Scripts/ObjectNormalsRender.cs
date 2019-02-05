@@ -9,20 +9,20 @@ public class ObjectNormalsRender : MonoBehaviour
     public RenderTexture objectNormals;
     public RenderTexture objectDepth;
     public Shader ObjectNormalsShader;
-    public Shader ObjectDepthShader;
     public Material ObjectDepthMat;
-    // Use this for initialization
+
     void OnEnable()
     {
         cam = GetComponent<Camera>();
         cam.depthTextureMode = DepthTextureMode.DepthNormals;
         cam.depthTextureMode |= DepthTextureMode.Depth;
 
-        cam.targetTexture = objectNormals;
-        cam.SetReplacementShader(ObjectNormalsShader, null);
+        int width = Screen.width;
+        int height = Screen.height;
 
-        GetComponent<Camera>().depthTextureMode = DepthTextureMode.DepthNormals;
-        GetComponent<Camera>().depthTextureMode |= DepthTextureMode.Depth;
+        objectNormals = new RenderTexture(width, height, 32, RenderTextureFormat.ARGBFloat);
+        objectDepth = new RenderTexture(width, height, 32, RenderTextureFormat.RFloat);
+
         cam.targetTexture = objectNormals;
         cam.SetReplacementShader(ObjectNormalsShader, null);
     }
