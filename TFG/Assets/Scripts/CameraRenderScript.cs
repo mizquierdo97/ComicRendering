@@ -76,8 +76,8 @@ public class CameraRenderScript : MonoBehaviour
         cam = GetComponent<Camera>();
         cam.depthTextureMode = DepthTextureMode.DepthNormals;
         cam.depthTextureMode |= DepthTextureMode.Depth;
-        int width = Screen.width;
-        int height = Screen.height;
+        int width = Screen.width * 2;
+        int height = Screen.height * 2;
 
 
         depthTarget = new RenderTexture(width, height, 32, RenderTextureFormat.RFloat);
@@ -113,7 +113,7 @@ public class CameraRenderScript : MonoBehaviour
     {
         timer += Time.deltaTime;
         Shader.SetGlobalTexture("_ShadowTexture", shadowTexture);
-        // if (timer >= 1.0f / (float)frames)
+        if (timer >= 1.0f / (float)frames)
         {
             timer = 0.0f;
 
@@ -134,7 +134,7 @@ public class CameraRenderScript : MonoBehaviour
             Graphics.Blit(colorTarget, normalsTarget, normalsMat);
             //--------------------------------------------------
 
-            //Remove Noise-------------------------------------
+           /* //Remove Noise-------------------------------------
             noiseReductionMat.SetTexture("_CameraDepth", depthTarget);
             noiseReductionMat.SetInt("_UsingDepth", 1);
             Graphics.Blit(normalsTarget, blurNormalsTarget, noiseReductionMat);
@@ -145,10 +145,10 @@ public class CameraRenderScript : MonoBehaviour
             noiseReductionMat.SetInt("_UsingDepth", 1);
             Graphics.Blit(colorTarget, blurColorTarget, noiseReductionMat);
             //-------------------------------------------------------
-
+            */
             //SOBEL--------------------------------------------------
             sobelProcessMat.SetTexture("_CameraDepth", depthTarget);
-            sobelProcessMat.SetTexture("_CameraNormals", blurNormalsTarget);
+            sobelProcessMat.SetTexture("_CameraNormals", normalsTarget);
             sobelProcessMat.SetFloat("_ColorWidth", ColWidth);
             sobelProcessMat.SetFloat("_NormalWidth", NormWidth);
             sobelProcessMat.SetFloat("_DepthWidth", DepthWidth);
@@ -159,17 +159,17 @@ public class CameraRenderScript : MonoBehaviour
             sobelProcessMat.SetInt("_DistanceFalloff", DistanceFalloff);
             Graphics.Blit(colorTarget, sobelTargetColor, sobelProcessMat);
             //-----------------------------------------------------
-
+/*
             //Final Outline Blur-------------------------------------
             gaussianProcessMat.SetFloat("_Intensity", outlineBlurInt);
             Graphics.Blit(sobelTargetColor, blurTarget, gaussianProcessMat);
             //-------------------------------------------------------
-
+            */
             //Mix Original Tex + outline ----------------------------
             finalMat.SetTexture("_CameraDepth", depthTarget);
-            finalMat.SetTexture("_OutlineTex", blurTarget);
+            finalMat.SetTexture("_OutlineTex", sobelTargetColor);
             finalMat.SetColor("_OutlineColor", lineColor);
-            Graphics.Blit(blurColorTarget, final, finalMat);
+            Graphics.Blit(colorTarget, final, finalMat);
             //-------------------------------------------------------
         }
         switch (mode)

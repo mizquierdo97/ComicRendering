@@ -17,8 +17,8 @@ public class ObjectNormalsRender : MonoBehaviour
         cam.depthTextureMode = DepthTextureMode.DepthNormals;
         cam.depthTextureMode |= DepthTextureMode.Depth;
 
-        int width = Screen.width;
-        int height = Screen.height;
+        int width = Screen.width * 1;
+        int height = Screen.height * 1;
 
         objectNormals = new RenderTexture(width, height, 32, RenderTextureFormat.ARGBFloat);
         objectDepth = new RenderTexture(width, height, 32, RenderTextureFormat.RFloat);
