@@ -51,7 +51,7 @@
 		depth = max(depth, 1 - tex2D(_CameraDepth, i.uv + (0, 1) * texel).r);
 		depth = max(depth, 1 - tex2D(_CameraDepth, i.uv + (0, -1) * texel).r);
 
-		return lerp(tex2D(_MainTex, i.uv.xy), _OutlineColor, tex2D(_OutlineTex, i.uv.xy) * depth);
+		return lerp(tex2D(_MainTex, i.uv.xy), _OutlineColor, tex2D(_OutlineTex, i.uv.xy));
 	}
 		ENDCG
 

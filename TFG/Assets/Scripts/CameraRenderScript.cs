@@ -181,7 +181,7 @@ public class CameraRenderScript : MonoBehaviour
                 }
             case RenderTarget.Color:
                 {
-                    Graphics.Blit(blurColorTarget, destination);
+                    Graphics.Blit(colorTarget, destination);
                     break;
                 }
             case RenderTarget.Depth:
