@@ -83,11 +83,12 @@ half4 CalculateLight (unity_v2f_deferred i)
 		{
 			NdotL = 0.8;
 		}
+		
 	}
 	
 	else NdotL = 1;
 	half4 c;
-	c.rgb = data.diffuseColor * _LightColor0.rgb * (NdotL * atten * 2);
+	c.rgb = data.diffuseColor * light.color.rgb * (NdotL * atten * 2);
 	c.a = 1;
 	return c;
     return res;

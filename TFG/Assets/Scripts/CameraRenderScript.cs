@@ -196,7 +196,7 @@ public class CameraRenderScript : MonoBehaviour
                 }
             case RenderTarget.Normals:
                 {
-                    Graphics.Blit(blurNormalsTarget, destination);
+                    Graphics.Blit(normalsTarget, destination);
                     break;
                 }
             case RenderTarget.ObjectNormals:

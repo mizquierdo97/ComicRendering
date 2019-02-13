@@ -50,9 +50,9 @@ Shader "Custom/ObjectNormalShader" {
 			  float g = sin(pos.x + pos.y + pos.z);
 			  float b = cos(pos.x + pos.y + pos.z);
 
-			  float A = pos.x;
-			  float B = pos.y;
-			  float C = pos.z;
+			  float A = pos.x + pos.y + pos.z;
+			  float B = 2* A;
+			  float C = 3 * A;
 			  float3x3 mat = {
 				  cos(B) * cos(C),-cos(B) * sin(C) * cos(A) + sin(B) * sin(A), cos(B) * sin(C) * sin(A) + sin(B) * cos(A),
 				  sin(C),cos(C) * cos(A),-cos(C) * sin(A),
