@@ -83,7 +83,7 @@ Shader "Custom/ObjectNormalShader" {
 
 
 
-			  o.customColor = lerp(abs(mul(mat, v.normal)), float3(sin(A), sin(B), sin(C))*0.5 + 0.5, 1);
+			  o.customColor = lerp(abs(mul(mat, v.normal)), float3(sin(A), sin(B), sin(C))*0.5 + 0.5, _Intensity);
 			  //o.customColor = v.normal + normalize((pos) % 1);
 			  //o.customColor = sin(pos)*0.5 + 0.5;
 		  }

@@ -59,7 +59,7 @@
 
 		float3 hr =  float3(0, 0, 0);
 		float3 vt = float3(0, 0, 0);
-		int size = 3;
+		int size = 5;
 		int it = (size - 1) / 2;
 		int temp = it;
 		for (int i = -it; i <= it; i++)
@@ -114,6 +114,7 @@
 		float intensityB = sqrt(hr.z*hr.z + vt.z * vt.z);
 		
 		ret = (intensityR + intensityG + intensityB);		
+		//if (ret.x > 0.2) ret = 1;
 		return ret;
 
 	}
@@ -152,8 +153,7 @@
 		ret = 1 - ret;
 		ret = min(ret,1);
 		//ret = max(ret, 0);
-		ret = 1 - ret;
-
+		ret = 1 - ret;		
 		/*float ret = 0.0;
 		float intensityR = sqrt(hr*hr + vt * vt);	
 		ret = intensityR;*/
