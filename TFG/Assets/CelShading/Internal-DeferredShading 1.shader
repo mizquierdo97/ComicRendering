@@ -74,21 +74,21 @@ half4 CalculateLight (unity_v2f_deferred i)
 			if (pattern < 0.5)
 			{
 				NdotL = max(NdotL, -0.3);
-				NdotL -= -0.4;
+				NdotL = 1;
 			}
-			else NdotL = 0.9;
+			else NdotL = 1;
 		}
 
 		if (NdotL <= 0)
 		{
-			NdotL = 0.8;
+			NdotL = 1;
 		}
 		
 	}
 	
 	else NdotL = 1;
 	half4 c;
-	c.rgb = data.diffuseColor * light.color.rgb * (NdotL * atten * 2);
+	c.rgb = 0;// data.diffuseColor * light.color.rgb * (0 * atten * 2);
 	c.a = 1;
 	return c;
     return res;

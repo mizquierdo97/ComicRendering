@@ -91,10 +91,11 @@ Shader "Custom/ObjectNormalShader" {
 		  void surf(Input IN, inout SurfaceOutput o) {
 
 			  o.Albedo = tex2D(_MainTex, IN.uv_MainTex).rgb;
-			  o.Albedo = IN.customColor;
+			  o.Albedo = IN.customColor * 2;
 		  }
 		  ENDCG
 	}	
+
 		SubShader{
 		  Tags { "RenderType" = "Transparent" }
 		  CGPROGRAM
