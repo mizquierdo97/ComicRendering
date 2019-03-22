@@ -21,6 +21,8 @@ public class CharacterCameraScript : MonoBehaviour
     {
         cam = GetComponent<Camera>();
         cam.depthTextureMode = DepthTextureMode.DepthNormals;
+        cam.depthTextureMode |= DepthTextureMode.Depth;
+
         int width = Screen.width;
         int height = Screen.height;
 

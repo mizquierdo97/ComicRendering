@@ -16,13 +16,13 @@
 			half4 LightingWrapLambert(SurfaceOutput s, half3 lightDir, half atten) {
 			half NdotL = dot(s.Normal, lightDir);	
 			float firstSlope = 0.5;
-			float secondSlope = 0.1;
+			float secondSlope = 0.4;
 			float thirdSlope = -0.5;
-			float fourthSlope = -1;
+			float fourthSlope = -0.6;
 
 			float mainIntensity = 1.0f;
-			float secondIntensity = 0.8;
-			float thirdIntensity = 0.5;
+			float secondIntensity = 1;
+			float thirdIntensity = 0.8;
 			if (NdotL <= firstSlope)
 			{
 				
