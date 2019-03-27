@@ -67,21 +67,26 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _Amplitude: 0.27
     - _BumpScale: 1
     - _Cutoff: 0.515
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EmissionLM: 71.7
+    - _Frequency: 28.53
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Intensity: 1
+    - _Lacunarity: 0.56
     - _MKGlowPower: 2.5
     - _MKGlowTexStrength: 3.34
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
+    - _Octaves: 9.6
     - _Parallax: 0.02
+    - _Persistence: 1.8
     - _Shininess: 0.078125
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 0
@@ -93,4 +98,5 @@ Material:
     - _EmissionColor: {r: 1351.1758, g: 1199.021, b: 0, a: 1}
     - _MKGlowColor: {r: 0, g: 0.25317216, b: 1, a: 1}
     - _MKGlowTexColor: {r: 0.062745094, g: 0.5258312, b: 1, a: 1}
+    - _Offset: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
