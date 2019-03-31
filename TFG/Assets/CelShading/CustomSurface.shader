@@ -7,12 +7,20 @@
 		_Metallic ("Metallic", Range(0,1)) = 0.0
 		_Intensity("Intensity", Range(0,1)) = 1.0
 
-		_Octaves("Octaves", Float) = 9.6
-		_Frequency("Frequency", Float) = 1.0
-		_Amplitude("Amplitude", Float) = 1.0
-		_Lacunarity("Lacunarity", Float) = 1.92
-		_Persistence("Persistence", Float) = 0.8
-		_Offset("Offset", Vector) = (0.0, 0.0, 0.0, 0.0)
+		_BOctaves(" Big Noise Octaves", Float) = 9.6
+		_BFrequency(" Big Noise Frequency", Float) = 1.0
+		_BAmplitude(" Big Noise Amplitude", Float) = 1.0
+		_BLacunarity(" Big Noise Lacunarity", Float) = 1.92
+		_BPersistence(" Big Noise Persistence", Float) = 0.8
+		_BOffset(" Big Noise Offset", Vector) = (0.0, 0.0, 0.0, 0.0)
+
+		_SOctaves("Small Noise Octaves", Float) = 9.6
+		_SFrequency("Small Noise Frequency", Float) = 1.0
+		_SAmplitude("Small Noise Amplitude", Float) = 1.0
+		_SLacunarity("Small Noise Lacunarity", Float) = 1.92
+		_SPersistence("Small Noise Persistence", Float) = 0.8
+		_SOffset("Small Noise Offset", Vector) = (0.0, 0.0, 0.0, 0.0)
+		_Div("DepthInstensity", Float) = 1.0
 	}
 
 		CGINCLUDE
@@ -123,8 +131,8 @@
 			float fourthSlope = -0.6;
 
 			float mainIntensity = 1.0f;
-			float secondIntensity = 1;
-			float thirdIntensity = 0.8;
+			float secondIntensity = 0.5;
+			float thirdIntensity = 0.5;
 			if (NdotL <= firstSlope)
 			{
 				
@@ -161,19 +169,26 @@
 
 
 		struct Input {
-			float2 uv_MainTex;
 			float3 pos;
 			float depth;
-			float4 screenPos;
+			float3 objPos;
 		};
 		float4 _Color;
 		sampler2D _MainTex;
-		fixed _Octaves;
-		float _Frequency;
-		float _Amplitude;
-		float3 _Offset;
-		float _Lacunarity;
-		float _Persistence;
+		fixed _BOctaves;
+		float _BFrequency;
+		float _BAmplitude;
+		float3 _BOffset;
+		float _BLacunarity;
+		float _BPersistence;
+		fixed _SOctaves;
+		float _SFrequency;
+		float _SAmplitude;
+		float3 _SOffset;
+		float _SLacunarity;
+		float _SPersistence;
+
+		float _Div;
 
 		sampler2D_float _CameraDepthTexture;
 		float4 _CameraDepthTexture_TexelSize;
@@ -183,32 +198,40 @@
 			UNITY_INITIALIZE_OUTPUT(Input, OUT);
 			OUT.pos = v.vertex.xyz;
 			OUT.pos = mul(unity_ObjectToWorld, v.vertex).xyz;
+			OUT.objPos =  mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz;
 			//UNITY_TRANSFER_DEPTH(OUT.depth);
 			
+
 			COMPUTE_EYEDEPTH(OUT.depth);
 		}
 
 		void surf(Input IN, inout SurfaceOutput o) {
-			o.Albedo = tex2D(_MainTex, IN.uv_MainTex).rgb * _Color;		
-			float h = PerlinNormal(IN.pos, _Octaves, _Offset, _Frequency, _Amplitude, _Lacunarity, _Persistence);
+			o.Albedo = _Color;		
+
+			float p = PerlinNormal(IN.pos, _SOctaves, IN.objPos, _SFrequency, _SAmplitude, _SLacunarity, _SPersistence);
+			p = clamp(p, 0, 1);
+
+
+			float h = PerlinNormal(IN.pos, _BOctaves, IN.objPos, _BFrequency, _BAmplitude - (IN.depth / (_Div * 2)), _BLacunarity, _BPersistence + (IN.depth / _Div));
+			float noiseColor[3];
+			for (int i = 0; i < 3; i++)
+			{
+				noiseColor[i] = PerlinNormal(IN.pos, _BOctaves, _BOffset + i * 1000, _BFrequency * 2, _BAmplitude, _BLacunarity, _BPersistence / 1.2);
+				noiseColor[i] = clamp(noiseColor[i], 0, 1);
+			}
+			float3 colorVariation;
+			colorVariation.r = noiseColor[0];
+			colorVariation.g = noiseColor[1];
+			colorVariation.b = noiseColor[2];
+			
 			h = clamp(h, 0, 1);
+			float3 col = o.Albedo * 0.2;
+			if (h > 0.9) col  = o.Albedo * 0.8 - (col * colorVariation / 2.0f);
+			else if (h < (0.8 - (IN.depth / _Div)) && p < 0.75) col = o.Albedo;
+			else if (p >= 0.8) col = o.Albedo * 0.5;
+			col +=col * (colorVariation / 20.0f);
+			o.Albedo = col * (1 - (IN.depth / 200));
 
-			float3 col = float3(0,0,0);
-			if (h > 0.9) col  = o.Albedo * 0.9;
-			else if (h < 0.8) col = o.Albedo;
-			//else h = 0;
-		
-
-			float rawZ = SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, UNITY_PROJ_COORD(IN.screenPos));
-			float sceneZ = LinearEyeDepth(rawZ);
-			float partZ = IN.depth;
-
-			float fade = 1.0;
-			if (rawZ > 0.0) // Make sure the depth texture exists
-				fade = saturate(5 * (sceneZ - partZ));
-			o.Albedo = col;// *fade;
-			//o.Albedo = h;
-			// *(1 - (fade));
 		}
 		ENDCG
 	}

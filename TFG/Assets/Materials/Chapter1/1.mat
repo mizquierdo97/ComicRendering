@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: 1
-  m_Shader: {fileID: 4800000, guid: 763a99d53a6724844af088e7baf21d48, type: 3}
+  m_Shader: {fileID: 4800000, guid: 74d11cbebf8e7a04cbab58350315c708, type: 3}
   m_ShaderKeywords: _GLOSSYREFLECTIONS_OFF _SPECULARHIGHLIGHTS_OFF
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -60,11 +60,17 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _Amplitude: 0.27
+    - _BAmplitude: 0.66
+    - _BFrequency: 5.44
+    - _BLacunarity: 0.5
+    - _BOctaves: 7
+    - _BPersistence: 1.52
     - _BumpScale: 1
     - _CellType: 6.6
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DistanceFunction: 5.09
+    - _Div: 406.8
     - _DstBlend: 0
     - _Frequency: 28.53
     - _GlossMapScale: 1
@@ -78,6 +84,11 @@ Material:
     - _Octaves: 9.6
     - _Parallax: 0.02
     - _Persistence: 1.8
+    - _SAmplitude: 0.97
+    - _SFrequency: 1.18
+    - _SLacunarity: 1.98
+    - _SOctaves: 3.24
+    - _SPersistence: 0.82
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 0
     - _SrcBlend: 1
@@ -85,7 +96,9 @@ Material:
     - _WindQuality: 0
     - _ZWrite: 1
     m_Colors:
+    - _BOffset: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 0.4039216, g: 0.8470589, b: 0.7607844, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _HueVariation: {r: 1, g: 0.5, b: 0, a: 0.1}
     - _Offset: {r: -93.42, g: 0, b: 0, a: 0}
+    - _SOffset: {r: 0, g: 0, b: 0, a: 0}

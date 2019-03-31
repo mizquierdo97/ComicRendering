@@ -68,9 +68,15 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _Amplitude: 0.27
+    - _BAmplitude: 0.66
+    - _BFrequency: 5.44
+    - _BLacunarity: 0.5
+    - _BOctaves: 7
+    - _BPersistence: 1.52
     - _BumpScale: 1
     - _Cutoff: 0.515
     - _DetailNormalMapScale: 1
+    - _Div: 406.8
     - _DstBlend: 0
     - _EmissionLM: 71.7
     - _Frequency: 28.53
@@ -87,6 +93,11 @@ Material:
     - _Octaves: 9.6
     - _Parallax: 0.02
     - _Persistence: 1.8
+    - _SAmplitude: 0.97
+    - _SFrequency: 1.18
+    - _SLacunarity: 1.98
+    - _SOctaves: 3.24
+    - _SPersistence: 0.82
     - _Shininess: 0.078125
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 0
@@ -94,9 +105,11 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
+    - _BOffset: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 0.242969, g: 0.4756105, b: 0.49056602, a: 1}
     - _EmissionColor: {r: 1351.1758, g: 1199.021, b: 0, a: 1}
     - _MKGlowColor: {r: 0, g: 0.25317216, b: 1, a: 1}
     - _MKGlowTexColor: {r: 0.062745094, g: 0.5258312, b: 1, a: 1}
     - _Offset: {r: 0, g: 0, b: 0, a: 0}
+    - _SOffset: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
