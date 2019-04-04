@@ -224,10 +224,10 @@
 			colorVariation.g = noiseColor[1];
 			colorVariation.b = noiseColor[2];
 			
-			h = clamp(h, 0, 1);
+			h = h / 2;// clamp(h, 0, 1);
 			float3 col = o.Albedo * 0.2;
 			if (h > 0.9) col  = o.Albedo * 0.8 - (col * colorVariation / 2.0f);
-			else if (h < (0.8 - (IN.depth / _Div)) && p < 0.75) col = o.Albedo;
+			else if (h < (0.89 - (IN.depth / _Div)) && p < 0.75) col = o.Albedo;
 			else if (p >= 0.8) col = o.Albedo * 0.5;
 			col +=col * (colorVariation / 20.0f);
 			o.Albedo = col * (1 - (IN.depth / 200));
