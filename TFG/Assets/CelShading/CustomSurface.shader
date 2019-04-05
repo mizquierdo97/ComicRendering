@@ -121,7 +121,7 @@
 			CGPROGRAM
 #pragma surface surf WrapLambert vertex:vert
 					#pragma glsl
-		#pragma target 3.0
+		#pragma target 3.5
 
 			half4 LightingWrapLambert(SurfaceOutput s, half3 lightDir, half atten) {
 			half NdotL = dot(s.Normal, lightDir);	
@@ -170,8 +170,9 @@
 
 		struct Input {
 			float3 pos;
-			float depth;
+			//float depth;
 			float3 objPos;
+			float2 uvs;
 		};
 		float4 _Color;
 		sampler2D _MainTex;
@@ -195,24 +196,26 @@
 
 		void vert(inout appdata_full v, out Input OUT)
 		{
-			UNITY_INITIALIZE_OUTPUT(Input, OUT);
-			OUT.pos = v.vertex.xyz;
+			UNITY_INITIALIZE_OUTPUT(Input, OUT);			
 			OUT.pos = mul(unity_ObjectToWorld, v.vertex).xyz;
-			OUT.objPos =  mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz;
+			//OUT.objPos =  mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz;
 			//UNITY_TRANSFER_DEPTH(OUT.depth);
-			
-
-			COMPUTE_EYEDEPTH(OUT.depth);
+			OUT.uvs = v.texcoord;
+			//COMPUTE_EYEDEPTH(OUT.depth);
 		}
 
 		void surf(Input IN, inout SurfaceOutput o) {
-			o.Albedo = _Color;		
 
-			float p = PerlinNormal(IN.pos, _SOctaves, IN.objPos, _SFrequency, _SAmplitude, _SLacunarity, _SPersistence);
+			float3 tex = tex2D(_MainTex, IN.uvs);
+			float depth = 0;// IN.depth;
+			float3 color = _Color * tex;
+			o.Albedo = color;
+			float3 objPos = IN.objPos;
+			float p = PerlinNormal(IN.pos, _SOctaves, objPos, _SFrequency, _SAmplitude, _SLacunarity, _SPersistence);
 			p = clamp(p, 0, 1);
 
 
-			float h = PerlinNormal(IN.pos, _BOctaves, IN.objPos, _BFrequency, _BAmplitude - (IN.depth / (_Div * 2)), _BLacunarity, _BPersistence + (IN.depth / _Div));
+			float h = PerlinNormal(IN.pos, _BOctaves, objPos, _BFrequency, _BAmplitude - (depth / (_Div * 2)), _BLacunarity, _BPersistence + (depth / _Div));
 			float noiseColor[3];
 			for (int i = 0; i < 3; i++)
 			{
@@ -225,13 +228,14 @@
 			colorVariation.b = noiseColor[2];
 			
 			h = h / 2;// clamp(h, 0, 1);
-			float3 col = o.Albedo * 0.2;
-			if (h > 0.9) col  = o.Albedo * 0.8 - (col * colorVariation / 2.0f);
-			else if (h < (0.89 - (IN.depth / _Div)) && p < 0.75) col = o.Albedo;
-			else if (p >= 0.8) col = o.Albedo * 0.5;
+			float3 col = color * 0.2;
+			if (h > 0.9) col  = color * 0.8 - (col * colorVariation / 2.0f);
+			else if (h < (0.89 - (depth / _Div)) && p < 0.75) col = color;
+			else if (p >= 0.8) col = color * 0.5;
 			col +=col * (colorVariation / 20.0f);
-			o.Albedo = col * (1 - (IN.depth / 200));
-
+			o.Albedo = col * (1 - (depth / 200));
+			//o.Albedo = tex;
+			//o.Albedo = float3(IN.uvs, 0);
 		}
 		ENDCG
 	}
