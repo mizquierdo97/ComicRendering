@@ -133,6 +133,8 @@
 			float mainIntensity = 1.0f;
 			float secondIntensity = 0.5;
 			float thirdIntensity = 0.5;
+			float saturation = 1.0f;
+
 			if (NdotL <= firstSlope)
 			{
 				
@@ -145,24 +147,31 @@
 					if (NdotL > thirdSlope)
 					{
 						NdotL = secondIntensity;
+						saturation = 2.0f;
 					}
 					else
 					{
 						if (NdotL > fourthSlope)
 						{
 							NdotL = ((NdotL - fourthSlope) / (thirdSlope - fourthSlope) ) * secondIntensity + (1 - (NdotL - fourthSlope)/ (thirdSlope - fourthSlope)) * thirdIntensity;
+							saturation = 2.0f;
 						}
 						else
 						{
 							NdotL = thirdIntensity;
+							saturation = 2.0f;
 						}
 					}
 				}
 			}
 			else NdotL = mainIntensity;
-			half diff = NdotL;
+
+			float3 col = s.Albedo;
+			half diff =  NdotL;
+			float3 color = float3(0.5 * (1 - saturation) + col.r * saturation, 0.5 * (1 - saturation) + col.g * saturation, 0.5 * (1 - saturation) + col.b * saturation);
+
 			half4 c;
-			c.rgb = s.Albedo * _LightColor0.rgb * (diff * atten);
+			c.rgb =  (color * _LightColor0.rgb * (diff * atten));
 			c.a = s.Alpha;
 			return c;
 		}
@@ -170,7 +179,7 @@
 
 		struct Input {
 			float3 pos;
-			//float depth;
+			float depth;
 			float3 objPos;
 			float2 uvs;
 		};
@@ -198,22 +207,21 @@
 		{
 			UNITY_INITIALIZE_OUTPUT(Input, OUT);			
 			OUT.pos = mul(unity_ObjectToWorld, v.vertex).xyz;
-			//OUT.objPos =  mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz;
+			OUT.objPos =  mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz;
 			//UNITY_TRANSFER_DEPTH(OUT.depth);
 			OUT.uvs = v.texcoord;
-			//COMPUTE_EYEDEPTH(OUT.depth);
+			COMPUTE_EYEDEPTH(OUT.depth);
 		}
 
 		void surf(Input IN, inout SurfaceOutput o) {
 
 			float3 tex = tex2D(_MainTex, IN.uvs);
-			float depth = 0;// IN.depth;
+			float depth =  IN.depth;
 			float3 color = _Color * tex;
 			o.Albedo = color;
 			float3 objPos = IN.objPos;
 			float p = PerlinNormal(IN.pos, _SOctaves, objPos, _SFrequency, _SAmplitude, _SLacunarity, _SPersistence);
 			p = clamp(p, 0, 1);
-
 
 			float h = PerlinNormal(IN.pos, _BOctaves, objPos, _BFrequency, _BAmplitude - (depth / (_Div * 2)), _BLacunarity, _BPersistence + (depth / _Div));
 			float noiseColor[3];
@@ -230,10 +238,10 @@
 			h = h / 2;// clamp(h, 0, 1);
 			float3 col = color * 0.2;
 			if (h > 0.9) col  = color * 0.8 - (col * colorVariation / 2.0f);
-			else if (h < (0.89 - (depth / _Div)) && p < 0.75) col = color;
+			else if (h < (0.8 - (depth / _Div)) && p < 0.75) col = color;
 			else if (p >= 0.8) col = color * 0.5;
 			col +=col * (colorVariation / 20.0f);
-			o.Albedo = col * (1 - (depth / 200));
+			o.Albedo = col *(1 - (depth / 300));
 			//o.Albedo = tex;
 			//o.Albedo = float3(IN.uvs, 0);
 		}

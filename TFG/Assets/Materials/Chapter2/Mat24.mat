@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Mat12
+  m_Name: Mat24
   m_Shader: {fileID: 4800000, guid: 74d11cbebf8e7a04cbab58350315c708, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -63,7 +63,7 @@ Material:
     - _BAmplitude: 0.2
     - _BFrequency: 5.44
     - _BLacunarity: 0.5
-    - _BOctaves: 7
+    - _BOctaves: 0
     - _BPersistence: 1.75
     - _BumpScale: 1
     - _Cutoff: 0.5
@@ -74,7 +74,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 1
-    - _Intensity: 0
+    - _Intensity: 1
     - _Lacunarity: 0.46
     - _Metallic: 0
     - _Mode: 0
@@ -85,7 +85,7 @@ Material:
     - _SAmplitude: 0.97
     - _SFrequency: 1.18
     - _SLacunarity: 1.98
-    - _SOctaves: 3
+    - _SOctaves: 0
     - _SPersistence: 0.57
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -94,9 +94,9 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BOffset: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 0.50445, g: 0.9811321, b: 0.8733936, a: 1}
+    - _Color: {r: 0.13333334, g: 0.28235295, b: 0.5254902, a: 1}
     - _Div: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Offset: {r: 16.79, g: 54.52, b: 11.71, a: 0}
+    - _Offset: {r: 0, g: 0, b: 0, a: 0}
     - _SOffset: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
