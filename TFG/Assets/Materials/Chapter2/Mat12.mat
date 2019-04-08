@@ -61,7 +61,7 @@ Material:
     m_Floats:
     - _Amplitude: 0.15
     - _BAmplitude: 0.2
-    - _BFrequency: 5.44
+    - _BFrequency: 11.5
     - _BLacunarity: 0.5
     - _BOctaves: 7
     - _BPersistence: 1.75
@@ -82,8 +82,8 @@ Material:
     - _Octaves: 11.3
     - _Parallax: 0.02
     - _Persistence: 2.17
-    - _SAmplitude: 0.97
-    - _SFrequency: 1.18
+    - _SAmplitude: 1.07
+    - _SFrequency: 1.89
     - _SLacunarity: 1.98
     - _SOctaves: 3
     - _SPersistence: 0.57

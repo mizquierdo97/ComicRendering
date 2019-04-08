@@ -3,8 +3,6 @@
 	Properties {
 		_Color ("Color", Color) = (1,1,1,1)
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
-		_Glossiness ("Smoothness", Range(0,1)) = 0.5
-		_Metallic ("Metallic", Range(0,1)) = 0.0
 		_Intensity("Intensity", Range(0,1)) = 1.0
 
 		_BOctaves(" Big Noise Octaves", Float) = 9.6
@@ -12,14 +10,12 @@
 		_BAmplitude(" Big Noise Amplitude", Float) = 1.0
 		_BLacunarity(" Big Noise Lacunarity", Float) = 1.92
 		_BPersistence(" Big Noise Persistence", Float) = 0.8
-		_BOffset(" Big Noise Offset", Vector) = (0.0, 0.0, 0.0, 0.0)
 
 		_SOctaves("Small Noise Octaves", Float) = 9.6
 		_SFrequency("Small Noise Frequency", Float) = 1.0
 		_SAmplitude("Small Noise Amplitude", Float) = 1.0
 		_SLacunarity("Small Noise Lacunarity", Float) = 1.92
 		_SPersistence("Small Noise Persistence", Float) = 0.8
-		_SOffset("Small Noise Offset", Vector) = (0.0, 0.0, 0.0, 0.0)
 		_Div("DepthInstensity", Float) = 1.0
 	}
 
@@ -69,13 +65,6 @@
 			float3 Pf = P - Pi;
 			float3 Pf_min1 = Pf - 1.0;
 
-			//
-			//	classic noise.
-			//	requires 3 random values per point.  with an efficent hash function will run faster than improved noise
-			//
-
-			//	calculate the hash.
-			//	( various hashing methods listed in order of speed )
 			float4 hashx0, hashy0, hashz0, hashx1, hashy1, hashz1;
 			FAST32_hash_3D(Pi, hashx0, hashy0, hashz0, hashx1, hashy1, hashz1);
 
@@ -110,6 +99,61 @@
 			}
 			return sum;
 		}
+		float3 Saturation(float _saturation, float3 col)
+		{
+			return float3(0.5 * (1 - _saturation) + col.r * _saturation, 0.5 * (1 - _saturation) + col.g * _saturation, 0.5 * (1 - _saturation) + col.b * _saturation);
+		}
+
+		float3 rgb_to_hsv_no_clip(float3 RGB)
+		{
+			float3 HSV;
+
+			float minChannel, maxChannel;
+			if (RGB.x > RGB.y) {
+				maxChannel = RGB.x;
+				minChannel = RGB.y;
+			}
+			else {
+				maxChannel = RGB.y;
+				minChannel = RGB.x;
+			}
+
+			if (RGB.z > maxChannel) maxChannel = RGB.z;
+			if (RGB.z < minChannel) minChannel = RGB.z;
+
+			HSV.xy = 0;
+			HSV.z = maxChannel;
+			float delta = maxChannel - minChannel;             //Delta RGB value
+			if (delta != 0) {                    // If gray, leave H  S at zero
+				HSV.y = delta / HSV.z;
+				float3 delRGB;
+				delRGB = (HSV.zzz - RGB + 3 * delta) / (6.0*delta);
+				if (RGB.x == HSV.z) HSV.x = delRGB.z - delRGB.y;
+				else if (RGB.y == HSV.z) HSV.x = (1.0 / 3.0) + delRGB.x - delRGB.z;
+				else if (RGB.z == HSV.z) HSV.x = (2.0 / 3.0) + delRGB.y - delRGB.x;
+			}
+			return (HSV);
+		}
+
+		float3 hsv_to_rgb(float3 HSV)
+		{
+			float3 RGB = HSV.z;
+
+			float var_h = HSV.x * 6;
+			float var_i = floor(var_h);   // Or ... var_i = floor( var_h )
+			float var_1 = HSV.z * (1.0 - HSV.y);
+			float var_2 = HSV.z * (1.0 - HSV.y * (var_h - var_i));
+			float var_3 = HSV.z * (1.0 - HSV.y * (1 - (var_h - var_i)));
+			if (var_i == 0) { RGB = float3(HSV.z, var_3, var_1); }
+			else if (var_i == 1) { RGB = float3(var_2, HSV.z, var_1); }
+			else if (var_i == 2) { RGB = float3(var_1, HSV.z, var_3); }
+			else if (var_i == 3) { RGB = float3(var_1, var_2, HSV.z); }
+			else if (var_i == 4) { RGB = float3(var_3, var_1, HSV.z); }
+			else { RGB = float3(HSV.z, var_1, var_2); }
+
+			return (RGB);
+		}
+
 		//
 
 		ENDCG
@@ -168,7 +212,7 @@
 
 			float3 col = s.Albedo;
 			half diff =  NdotL;
-			float3 color = float3(0.5 * (1 - saturation) + col.r * saturation, 0.5 * (1 - saturation) + col.g * saturation, 0.5 * (1 - saturation) + col.b * saturation);
+			float3 color = Saturation(saturation, col);
 
 			half4 c;
 			c.rgb =  (color * _LightColor0.rgb * (diff * atten));
@@ -224,26 +268,29 @@
 			p = clamp(p, 0, 1);
 
 			float h = PerlinNormal(IN.pos, _BOctaves, objPos, _BFrequency, _BAmplitude - (depth / (_Div * 2)), _BLacunarity, _BPersistence + (depth / _Div));
-			float noiseColor[3];
-			for (int i = 0; i < 3; i++)
-			{
-				noiseColor[i] = PerlinNormal(IN.pos, _BOctaves, _BOffset + i * 1000, _BFrequency * 2, _BAmplitude, _BLacunarity, _BPersistence / 1.2);
-				noiseColor[i] = clamp(noiseColor[i], 0, 1);
-			}
-			float3 colorVariation;
-			colorVariation.r = noiseColor[0];
-			colorVariation.g = noiseColor[1];
-			colorVariation.b = noiseColor[2];
 			
-			h = h / 2;// clamp(h, 0, 1);
-			float3 col = color * 0.2;
-			if (h > 0.9) col  = color * 0.8 - (col * colorVariation / 2.0f);
-			else if (h < (0.8 - (depth / _Div)) && p < 0.75) col = color;
+			//Maybe not needed
+			float noiseColor;
+			noiseColor = PerlinNormal(IN.pos, _BOctaves, _BOffset, _BFrequency / 10, _BAmplitude, _BLacunarity, _BPersistence);
+
+			//////
+
+			h = h / 3;// clamp(h, 0, 1);
+			float3 col = color * 0.4;
+			if (h > 0.9) col  = color * 0.8;
+			else if (h < (0.87 - (depth / _Div)) && p < 0.75) col = color;
 			else if (p >= 0.8) col = color * 0.5;
-			col +=col * (colorVariation / 20.0f);
-			o.Albedo = col *(1 - (depth / 300));
-			//o.Albedo = tex;
-			//o.Albedo = float3(IN.uvs, 0);
+
+			noiseColor = clamp(noiseColor, 0, 1);
+			float3 hsv = rgb_to_hsv_no_clip(Saturation(1+(1-noiseColor), col.xyz * clamp(noiseColor, 0.6, 1)));
+
+			hsv.x += noiseColor / 30;
+			if (hsv.x > 1.0) { hsv.x -= 1.0; }
+			
+			float variation = clamp(noiseColor, 0.9, 1);
+			col = half3(hsv_to_rgb(hsv)) * 1;
+			o.Albedo = col * (1 - (depth / 300));
+
 		}
 		ENDCG
 	}
