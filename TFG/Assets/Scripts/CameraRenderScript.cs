@@ -136,11 +136,16 @@ public class CameraRenderScript : MonoBehaviour
             //--------------------------------------------------
 
             //Distortion
-
+            distortionMat.SetInt("_Type", 0);
             distortionMat.SetTexture("_DistortionTexture", noiseTexture);
             distortionMat.SetTexture("_CameraDepth", depthTarget);
             Graphics.Blit(colorTarget, colorDistTarget, distortionMat);
+            //
 
+            //blur
+            gaussianProcessMat.SetTexture("_CameraDepth", depthTarget);
+            gaussianProcessMat.SetFloat("_Intensity", outlineBlurInt);
+            Graphics.Blit(colorDistTarget, blurColorTarget, gaussianProcessMat);
 
             //
 
@@ -150,7 +155,7 @@ public class CameraRenderScript : MonoBehaviour
             normalsMat.SetTexture("_MapNormals", objectNormals);
             normalsMat.SetTexture("_CharacterDepth", charCameraScript.depthTarget);
             normalsMat.SetTexture("_MapDepth", objectDepth);
-            Graphics.Blit(colorTarget, normalsTarget, normalsMat);
+            Graphics.Blit(colorDistTarget, normalsTarget, normalsMat);
             //--------------------------------------------------
 
             //SOBEL--------------------------------------------------
@@ -164,11 +169,12 @@ public class CameraRenderScript : MonoBehaviour
             sobelProcessMat.SetFloat("_NormThreshold", NormThreshold);
             sobelProcessMat.SetFloat("_DepthThreshold", DepthThreshold);
             sobelProcessMat.SetInt("_DistanceFalloff", DistanceFalloff);
-            Graphics.Blit(colorTarget, sobelTargetColor, sobelProcessMat);
+            Graphics.Blit(colorDistTarget, sobelTargetColor, sobelProcessMat);
             //-----------------------------------------------------
 
             //Distortion
 
+            distortionMat.SetInt("_Type", 1);
             distortionMat.SetTexture("_DistortionTexture", noiseTexture);
             distortionMat.SetTexture("_CameraDepth", depthTarget);
             Graphics.Blit(sobelTargetColor, distortionTarget, distortionMat);
@@ -180,7 +186,7 @@ public class CameraRenderScript : MonoBehaviour
             finalMat.SetTexture("_CameraDepth", depthTarget);
             finalMat.SetTexture("_OutlineTex", distortionTarget);
             finalMat.SetColor("_OutlineColor", lineColor);
-            Graphics.Blit(colorTarget, final, finalMat);
+            Graphics.Blit(blurColorTarget, final, finalMat);
             //-------------------------------------------------------
         }
         switch (mode)
@@ -192,7 +198,7 @@ public class CameraRenderScript : MonoBehaviour
                 }
             case RenderTarget.Color:
                 {
-                    Graphics.Blit(charCameraScript.depthTarget, destination);
+                    Graphics.Blit(colorDistTarget, destination);
                     break;
                 }
             case RenderTarget.Depth:

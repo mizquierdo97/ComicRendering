@@ -212,9 +212,17 @@
 
 			float3 col = s.Albedo;
 			half diff =  NdotL;
-			float3 color = Saturation(saturation, col);
+			float3 color = col;// Saturation(saturation, col);
 
 			half4 c;
+
+			float3 hsv = rgb_to_hsv_no_clip(Saturation(saturation, col.xyz * clamp(color, 0.3, 1)));
+
+			hsv.x += (saturation - 1) / 8;
+			if (hsv.x > 1.0) { hsv.x -= 1.0; }
+
+			color = half3(hsv_to_rgb(hsv)) * 1;
+
 			c.rgb =  (color * _LightColor0.rgb * (diff * atten));
 			c.a = s.Alpha;
 			return c;
@@ -281,15 +289,15 @@
 			else if (h < (0.87 - (depth / _Div)) && p < 0.75) col = color;
 			else if (p >= 0.8) col = color * 0.5;
 
-			noiseColor = clamp(noiseColor, 0, 1);
+			/*noiseColor = clamp(noiseColor, 0, 1);
 			float3 hsv = rgb_to_hsv_no_clip(Saturation(1+(1-noiseColor), col.xyz * clamp(noiseColor, 0.6, 1)));
 
 			hsv.x += noiseColor / 30;
 			if (hsv.x > 1.0) { hsv.x -= 1.0; }
 			
 			float variation = clamp(noiseColor, 0.9, 1);
-			col = half3(hsv_to_rgb(hsv)) * 1;
-			o.Albedo = col * (1 - (depth / 300));
+			col = half3(hsv_to_rgb(hsv)) * 1;*/
+			o.Albedo = col;// *(1 - (depth / 300));
 
 		}
 		ENDCG
