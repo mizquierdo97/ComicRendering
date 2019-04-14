@@ -1,7 +1,4 @@
-﻿// Upgrade NOTE: upgraded instancing buffer 'Props' to new syntax.
-
-// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
-
+﻿
 Shader "Custom/ObjectNormalShader" {
 	Properties{
 	  _MainTex("Texture", 2D) = "white" {}
@@ -20,8 +17,8 @@ Shader "Custom/ObjectNormalShader" {
 	sampler2D _CameraDepthNormalsTexture;
 	uniform float _Intensity;
 	fixed4 LightingNoLighting(SurfaceOutput s, fixed3 lightDir, fixed atten) {
+		
 		fixed4 c;
-
 		c.rgb = s.Albedo;
 		c.a = 1;
 
@@ -33,19 +30,7 @@ Shader "Custom/ObjectNormalShader" {
 			  const float PI = 3.14159;
 			  float3 norm = (UnityObjectToWorldNormal(v.normal));
 			  float3 pos = mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz;
-			  //o.customColor = float3(sin(pos.x*5 + pos.y*2 + pos.z), cos(pos.x - pos.y*20 + pos.z*3), cos(pos.x*4 - pos.y*5 - pos.z*2));
-			  //o.customColor = float3(
-				 // sin(/*(pos.x * 5 + pos.y * 2 + pos.z) *	*/	/**/	(norm.x * 0.5 + /*norm.y * 0.7 +*/ norm.z * 0.2)),
-				 // sin(/*(pos.x - pos.y * 20 + pos.z * 3) **/		/**/	(/*norm.x * 1 -*/ norm.y * 0.2 - norm.z * 0.1)),
-				 // sin(/*(pos.x * 4 - pos.y * 5 - pos.z * 2) **/	/**/	(norm.x * 0.5  - norm.y * 0.4 /*+ norm.z * 1*/)));
-
-			  //o.customColor = float3(
-				 // norm.x * abs(sin(pos.x * 5 + pos.y * 2 + pos.z)) + norm.y * abs(sin(pos.x * 5 + pos.y * 2 + pos.z)) + norm.z * abs(sin(pos.x * 5 + pos.y * 2 + pos.z)),
-				 // norm.x * abs(sin(pos.x * 1 + pos.y * 1 + pos.z *2)) + norm.y * abs(sin(pos.x * 1 + pos.y * 1 + pos.z)) + norm.z * abs(sin(pos.x * 1 + pos.y * 1 + pos.z*2)),
-				 // norm.x * abs(sin(pos.x * 3 + pos.y * 5 + pos.z * 3)) + norm.y * abs(sin(pos.x * 3 + pos.y * 5 + pos.z * 4)) + norm.z * abs(sin(pos.x * 2 + pos.y * 3 + pos.z * 4)));
-
-			  //o.customColor = (o.customColor);
-
+			 
 			  float r = cos(pos.x + pos.y + pos.z);
 			  float g = sin(pos.x + pos.y + pos.z);
 			  float b = cos(pos.x + pos.y + pos.z);

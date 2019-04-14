@@ -20,7 +20,9 @@
 	}
 
 		CGINCLUDE
-			//Noise
+
+		//NOISE GENERATION
+		
 			void FAST32_hash_3D(float3 gridcell,
 				out float4 lowz_hash_0,
 				out float4 lowz_hash_1,
@@ -29,10 +31,8 @@
 				out float4 highz_hash_1,
 				out float4 highz_hash_2)		//	generates 3 random numbers for each of the 8 cell corners
 		{
-			//    gridcell is assumed to be an integer coordinate
 
-			//	TODO: 	these constants need tweaked to find the best possible noise.
-			//			probably requires some kind of brute force computational searching or something....
+
 			const float2 OFFSET = float2(50.0, 161.0);
 			const float DOMAIN = 69.0;
 			const float3 SOMELARGEFLOATS = float3(635.298681, 682.357502, 668.926525);
@@ -99,61 +99,65 @@
 			}
 			return sum;
 		}
+		
+		//
+
 		float3 Saturation(float _saturation, float3 col)
 		{
 			return float3(0.5 * (1 - _saturation) + col.r * _saturation, 0.5 * (1 - _saturation) + col.g * _saturation, 0.5 * (1 - _saturation) + col.b * _saturation);
 		}
 
-		float3 rgb_to_hsv_no_clip(float3 RGB)
-		{
-			float3 HSV;
+		//COLOR HSV
+		
+			float3 rgb_to_hsv_no_clip(float3 RGB)
+			{
+				float3 HSV;
 
-			float minChannel, maxChannel;
-			if (RGB.x > RGB.y) {
-				maxChannel = RGB.x;
-				minChannel = RGB.y;
+				float minChannel, maxChannel;
+				if (RGB.x > RGB.y) {
+					maxChannel = RGB.x;
+					minChannel = RGB.y;
+				}
+				else {
+					maxChannel = RGB.y;
+					minChannel = RGB.x;
+				}
+
+				if (RGB.z > maxChannel) maxChannel = RGB.z;
+				if (RGB.z < minChannel) minChannel = RGB.z;
+
+				HSV.xy = 0;
+				HSV.z = maxChannel;
+				float delta = maxChannel - minChannel;             //Delta RGB value
+				if (delta != 0) {                    // If gray, leave H  S at zero
+					HSV.y = delta / HSV.z;
+					float3 delRGB;
+					delRGB = (HSV.zzz - RGB + 3 * delta) / (6.0*delta);
+					if (RGB.x == HSV.z) HSV.x = delRGB.z - delRGB.y;
+					else if (RGB.y == HSV.z) HSV.x = (1.0 / 3.0) + delRGB.x - delRGB.z;
+					else if (RGB.z == HSV.z) HSV.x = (2.0 / 3.0) + delRGB.y - delRGB.x;
+				}
+				return (HSV);
 			}
-			else {
-				maxChannel = RGB.y;
-				minChannel = RGB.x;
+			float3 hsv_to_rgb(float3 HSV)
+			{
+				float3 RGB = HSV.z;
+
+				float var_h = HSV.x * 6;
+				float var_i = floor(var_h);   // Or ... var_i = floor( var_h )
+				float var_1 = HSV.z * (1.0 - HSV.y);
+				float var_2 = HSV.z * (1.0 - HSV.y * (var_h - var_i));
+				float var_3 = HSV.z * (1.0 - HSV.y * (1 - (var_h - var_i)));
+				if (var_i == 0) { RGB = float3(HSV.z, var_3, var_1); }
+				else if (var_i == 1) { RGB = float3(var_2, HSV.z, var_1); }
+				else if (var_i == 2) { RGB = float3(var_1, HSV.z, var_3); }
+				else if (var_i == 3) { RGB = float3(var_1, var_2, HSV.z); }
+				else if (var_i == 4) { RGB = float3(var_3, var_1, HSV.z); }
+				else { RGB = float3(HSV.z, var_1, var_2); }
+
+				return (RGB);
 			}
-
-			if (RGB.z > maxChannel) maxChannel = RGB.z;
-			if (RGB.z < minChannel) minChannel = RGB.z;
-
-			HSV.xy = 0;
-			HSV.z = maxChannel;
-			float delta = maxChannel - minChannel;             //Delta RGB value
-			if (delta != 0) {                    // If gray, leave H  S at zero
-				HSV.y = delta / HSV.z;
-				float3 delRGB;
-				delRGB = (HSV.zzz - RGB + 3 * delta) / (6.0*delta);
-				if (RGB.x == HSV.z) HSV.x = delRGB.z - delRGB.y;
-				else if (RGB.y == HSV.z) HSV.x = (1.0 / 3.0) + delRGB.x - delRGB.z;
-				else if (RGB.z == HSV.z) HSV.x = (2.0 / 3.0) + delRGB.y - delRGB.x;
-			}
-			return (HSV);
-		}
-
-		float3 hsv_to_rgb(float3 HSV)
-		{
-			float3 RGB = HSV.z;
-
-			float var_h = HSV.x * 6;
-			float var_i = floor(var_h);   // Or ... var_i = floor( var_h )
-			float var_1 = HSV.z * (1.0 - HSV.y);
-			float var_2 = HSV.z * (1.0 - HSV.y * (var_h - var_i));
-			float var_3 = HSV.z * (1.0 - HSV.y * (1 - (var_h - var_i)));
-			if (var_i == 0) { RGB = float3(HSV.z, var_3, var_1); }
-			else if (var_i == 1) { RGB = float3(var_2, HSV.z, var_1); }
-			else if (var_i == 2) { RGB = float3(var_1, HSV.z, var_3); }
-			else if (var_i == 3) { RGB = float3(var_1, var_2, HSV.z); }
-			else if (var_i == 4) { RGB = float3(var_3, var_1, HSV.z); }
-			else { RGB = float3(HSV.z, var_1, var_2); }
-
-			return (RGB);
-		}
-
+		
 		//
 
 		ENDCG
@@ -210,22 +214,19 @@
 			}
 			else NdotL = mainIntensity;
 
-			float3 col = s.Albedo;
-			half diff =  NdotL;
-			float3 color = col;// Saturation(saturation, col);
+			float3 color = s.Albedo;
 
-			half4 c;
-
-			float3 hsv = rgb_to_hsv_no_clip(Saturation(saturation, col.xyz * clamp(color, 0.3, 1)));
-
+			//COLOR HUE SHIFT
+			float3 hsv = rgb_to_hsv_no_clip(Saturation(saturation, color.xyz * clamp(color, 0.3, 1)));
 			hsv.x += (saturation - 1) / 8;
 			if (hsv.x > 1.0) { hsv.x -= 1.0; }
-
 			color = half3(hsv_to_rgb(hsv)) * 1;
+			//
 
-			c.rgb =  (color * _LightColor0.rgb * (diff * atten));
-			c.a = s.Alpha;
-			return c;
+			half4 ret;
+			ret.rgb =  (color * _LightColor0.rgb * (NdotL * atten));
+			ret.a = s.Alpha;
+			return ret;
 		}
 
 
@@ -257,25 +258,40 @@
 
 		void vert(inout appdata_full v, out Input OUT)
 		{
-			UNITY_INITIALIZE_OUTPUT(Input, OUT);			
+			UNITY_INITIALIZE_OUTPUT(Input, OUT);		
+
+			//WORLD PIXEL POSITION
 			OUT.pos = mul(unity_ObjectToWorld, v.vertex).xyz;
+
+			//WORLD OBJECT POSITION
 			OUT.objPos =  mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz;
-			//UNITY_TRANSFER_DEPTH(OUT.depth);
+
+			//TEX COORDS
 			OUT.uvs = v.texcoord;
+
+			//DEPTH
 			COMPUTE_EYEDEPTH(OUT.depth);
 		}
 
 		void surf(Input IN, inout SurfaceOutput o) {
 
+			//TEXTURE
 			float3 tex = tex2D(_MainTex, IN.uvs);
-			float depth =  IN.depth;
-			float3 color = _Color * tex;
-			o.Albedo = color;
-			float3 objPos = IN.objPos;
-			float p = PerlinNormal(IN.pos, _SOctaves, objPos, _SFrequency, _SAmplitude, _SLacunarity, _SPersistence);
-			p = clamp(p, 0, 1);
 
-			float h = PerlinNormal(IN.pos, _BOctaves, objPos, _BFrequency, _BAmplitude - (depth / (_Div * 2)), _BLacunarity, _BPersistence + (depth / _Div));
+			//DEPTH
+			float depth =  IN.depth;
+
+			//COLOR * TEXTURE
+			float3 color = _Color * tex;
+
+			//OBJEXT POSITION
+			float3 objPos = IN.objPos;
+
+
+			float smallNoise = PerlinNormal(IN.pos, _SOctaves, objPos, _SFrequency, _SAmplitude, _SLacunarity, _SPersistence);
+			smallNoise = clamp(smallNoise, 0, 1);
+
+			float bigNoise = PerlinNormal(IN.pos, _BOctaves, objPos, _BFrequency, _BAmplitude - (depth / (_Div * 2)), _BLacunarity, _BPersistence + (depth / _Div));
 			
 			//Maybe not needed
 			float noiseColor;
@@ -283,20 +299,15 @@
 
 			//////
 
-			h = h / 3;// clamp(h, 0, 1);
+			bigNoise = bigNoise / 3;
+
 			float3 col = color * 0.4;
-			if (h > 0.9) col  = color * 0.8;
-			else if (h < (0.87 - (depth / _Div)) && p < 0.75) col = color;
-			else if (p >= 0.8) col = color * 0.5;
+			if (bigNoise > 0.9) col  = color * 0.8;
+			else if (bigNoise < (0.87 - (depth / _Div)) && smallNoise < 0.75) col = color;
+			else if (smallNoise >= 0.8) col = color * 0.5;
 
-			/*noiseColor = clamp(noiseColor, 0, 1);
-			float3 hsv = rgb_to_hsv_no_clip(Saturation(1+(1-noiseColor), col.xyz * clamp(noiseColor, 0.6, 1)));
+			noiseColor = clamp(noiseColor, 0, 1);
 
-			hsv.x += noiseColor / 30;
-			if (hsv.x > 1.0) { hsv.x -= 1.0; }
-			
-			float variation = clamp(noiseColor, 0.9, 1);
-			col = half3(hsv_to_rgb(hsv)) * 1;*/
 			o.Albedo = col;// *(1 - (depth / 300));
 
 		}
