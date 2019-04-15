@@ -17,6 +17,8 @@
 		_SLacunarity("Small Noise Lacunarity", Float) = 1.92
 		_SPersistence("Small Noise Persistence", Float) = 0.8
 		_Div("DepthInstensity", Float) = 1.0
+		[MaterialToggle] _UsingNoise("Using Noise", Float) = 1.0
+		[MaterialToggle] _HUE("HUE Shift", Float) = 1.0
 	}
 
 		CGINCLUDE
@@ -171,6 +173,25 @@
 					#pragma glsl
 		#pragma target 3.5
 
+		//Input Parameters
+		float4 _Color;
+		sampler2D _MainTex;
+		fixed _BOctaves;
+		float _BFrequency;
+		float _BAmplitude;
+		float3 _BOffset;
+		float _BLacunarity;
+		float _BPersistence;
+		fixed _SOctaves;
+		float _SFrequency;
+		float _SAmplitude;
+		float3 _SOffset;
+		float _SLacunarity;
+		float _SPersistence;
+		bool _UsingNoise;
+		bool _HUE;
+
+		float _Div;
 			half4 LightingWrapLambert(SurfaceOutput s, half3 lightDir, half atten) {
 			half NdotL = dot(s.Normal, lightDir);	
 			float firstSlope = 0.5;
@@ -181,14 +202,17 @@
 			float mainIntensity = 1.0f;
 			float secondIntensity = 0.5;
 			float thirdIntensity = 0.5;
-			float saturation = 1.0f;
+			float saturation = 1.0f;			
 
 			if (NdotL <= firstSlope)
 			{
 				
 				if (NdotL > secondSlope)
 				{
+					saturation = ((NdotL - secondSlope) / (firstSlope - secondSlope)) * 1.0f + (1 - (NdotL - secondSlope) / (firstSlope - secondSlope)) * 2.0f;
 					NdotL = ((NdotL - secondSlope) / (firstSlope - secondSlope) ) * mainIntensity + (1 - (NdotL - secondSlope)/ (firstSlope - secondSlope)) * secondIntensity;
+					
+					
 				}
 				else
 				{
@@ -217,10 +241,13 @@
 			float3 color = s.Albedo;
 
 			//COLOR HUE SHIFT
-			float3 hsv = rgb_to_hsv_no_clip(Saturation(saturation, color.xyz * clamp(color, 0.3, 1)));
-			hsv.x += (saturation - 1) / 8;
-			if (hsv.x > 1.0) { hsv.x -= 1.0; }
-			color = half3(hsv_to_rgb(hsv)) * 1;
+			if (_HUE)
+			{
+				float3 hsv = rgb_to_hsv_no_clip(Saturation(saturation, color.xyz * clamp(color, 0.0, 1)));
+				hsv.x += (saturation - 1) / 8;
+				if (hsv.x > 1.0) { hsv.x -= 1.0; }
+				color = half3(hsv_to_rgb(hsv)) * 1;
+			}
 			//
 
 			half4 ret;
@@ -234,24 +261,9 @@
 			float3 pos;
 			float depth;
 			float3 objPos;
-			float2 uvs;
+			float2 uv_MainTex;
 		};
-		float4 _Color;
-		sampler2D _MainTex;
-		fixed _BOctaves;
-		float _BFrequency;
-		float _BAmplitude;
-		float3 _BOffset;
-		float _BLacunarity;
-		float _BPersistence;
-		fixed _SOctaves;
-		float _SFrequency;
-		float _SAmplitude;
-		float3 _SOffset;
-		float _SLacunarity;
-		float _SPersistence;
-
-		float _Div;
+		
 
 		sampler2D_float _CameraDepthTexture;
 		float4 _CameraDepthTexture_TexelSize;
@@ -266,9 +278,6 @@
 			//WORLD OBJECT POSITION
 			OUT.objPos =  mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz;
 
-			//TEX COORDS
-			OUT.uvs = v.texcoord;
-
 			//DEPTH
 			COMPUTE_EYEDEPTH(OUT.depth);
 		}
@@ -276,18 +285,22 @@
 		void surf(Input IN, inout SurfaceOutput o) {
 
 			//TEXTURE
-			float3 tex = tex2D(_MainTex, IN.uvs);
+			float3 tex = tex2D(_MainTex, IN.uv_MainTex);
 
 			//DEPTH
 			float depth =  IN.depth;
 
 			//COLOR * TEXTURE
-			float3 color = _Color * tex;
+			float3 color = _Color *tex;
 
 			//OBJEXT POSITION
 			float3 objPos = IN.objPos;
 
-
+			if (!_UsingNoise)
+			{
+				o.Albedo = color;
+				return;
+			}
 			float smallNoise = PerlinNormal(IN.pos, _SOctaves, objPos, _SFrequency, _SAmplitude, _SLacunarity, _SPersistence);
 			smallNoise = clamp(smallNoise, 0, 1);
 

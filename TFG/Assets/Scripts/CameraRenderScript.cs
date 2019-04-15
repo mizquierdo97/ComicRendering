@@ -18,6 +18,7 @@ public class CameraRenderScript : MonoBehaviour
         ObjectNormals,
     }
 
+
     public RenderTarget mode = RenderTarget.Final;
     public Material colorMat;
     public Material depthMat;
@@ -30,11 +31,8 @@ public class CameraRenderScript : MonoBehaviour
     public Material mixTargetsMat;
     public Material finalMat;
 
-    public Shader ToonShader;
-    public Texture shadowTexture;
     public Texture noiseTexture;
 
-    public Color lineColor;
     public Camera cam;
     public float ColWidth = 0.001f;
     public float NormWidth = 0.001f;
@@ -50,10 +48,9 @@ public class CameraRenderScript : MonoBehaviour
     [Range(0, 20)]
     public int DistanceFalloff = 1;
 
-    public float imageBlurInt = 1.0f;
     public float outlineBlurInt = 1.0f;
 
-
+    //RENDER TARGETS
     RenderTexture depthTarget;
     RenderTexture colorTarget;
     RenderTexture colorDistTarget;
@@ -70,11 +67,63 @@ public class CameraRenderScript : MonoBehaviour
     RenderTexture objectNormals;
     RenderTexture objectDepth;
 
+    public Shader MapNormals;
+    public Shader MapDepth;
+    public Shader CharactersNormals;
+    public Shader CharactersNormalsDepth;
+
     float timer = 0.0f;
     [Range(10,60)]
     public int frames = 25;
 
-    RenderBuffer[] mrtRB = new RenderBuffer[1];
+    //Cameras 
+    private Camera Cam
+    {
+        get { return GetComponent<Camera>(); }
+    }
+    private Camera charactersCamera;
+    private GameObject charactersCameraObject;
+
+    private GameObject CharactersCameraObject
+    {
+        get
+        {
+            if (!charactersCameraObject)
+            {
+                charactersCameraObject = new GameObject("selectiveGlowCameraObject");
+                charactersCameraObject.AddComponent<Camera>();
+                charactersCameraObject.hideFlags = HideFlags.HideAndDontSave;
+                CharactersCamera.orthographic = false;
+                CharactersCamera.enabled = false;
+                CharactersCamera.renderingPath = RenderingPath.VertexLit;
+                CharactersCamera.hideFlags = HideFlags.HideAndDontSave;
+            }
+            return charactersCameraObject;
+        }
+    }
+    private Camera CharactersCamera
+    {
+        get
+        {
+            if (charactersCamera == null)
+            {
+                charactersCamera = CharactersCameraObject.GetComponent<Camera>();
+            }
+            return charactersCamera;
+        }
+    }
+    private void SetupGlowCamera(RenderTexture render)
+    {
+        CharactersCamera.CopyFrom(Cam);
+        CharactersCamera.depthTextureMode = DepthTextureMode.None;
+        CharactersCamera.targetTexture = render;
+
+        CharactersCamera.clearFlags = CameraClearFlags.SolidColor;
+        CharactersCamera.rect = new Rect(0, 0, 1, 1);
+        CharactersCamera.backgroundColor = new Color(0, 0, 0, 0);
+        CharactersCamera.cullingMask = LayerMask.GetMask("Map");
+        CharactersCamera.renderingPath = RenderingPath.VertexLit;
+    }
     void Start()
     {
         cam = GetComponent<Camera>();
@@ -116,15 +165,20 @@ public class CameraRenderScript : MonoBehaviour
 
         objectNormals = objNormScript.objectNormals;
         objectDepth = objNormScript.objectDepth;
-
     }
   
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
         timer += Time.deltaTime;
-        Shader.SetGlobalTexture("_ShadowTexture", shadowTexture);
         if (timer >= 1.0f / (float)frames)
         {
+
+            SetupGlowCamera(objectNormals);
+            CharactersCamera.RenderWithShader(MapNormals, "RenderType");
+            SetupGlowCamera(objectDepth);
+            CharactersCamera.RenderWithShader(MapDepth, "RenderType");
+            //CharactersCamera.RenderWithShader(MapNormals, "RenderType");
+            //CharactersCamera.RenderWithShader(MapNormals, "RenderType");
             timer = 0.0f;
 
             //Depth Texture-------------------------------------
@@ -146,7 +200,6 @@ public class CameraRenderScript : MonoBehaviour
             gaussianProcessMat.SetTexture("_CameraDepth", depthTarget);
             gaussianProcessMat.SetFloat("_Intensity", outlineBlurInt);
             Graphics.Blit(colorDistTarget, blurColorTarget, gaussianProcessMat);
-
             //
 
             //Normals Texture-------------------------------------
@@ -173,19 +226,16 @@ public class CameraRenderScript : MonoBehaviour
             //-----------------------------------------------------
 
             //Distortion
-
             distortionMat.SetInt("_Type", 1);
             distortionMat.SetTexture("_DistortionTexture", noiseTexture);
             distortionMat.SetTexture("_CameraDepth", depthTarget);
             Graphics.Blit(sobelTargetColor, distortionTarget, distortionMat);
-
-
             //
            
             //Mix Original Tex + outline ----------------------------
             finalMat.SetTexture("_CameraDepth", depthTarget);
             finalMat.SetTexture("_OutlineTex", distortionTarget);
-            finalMat.SetColor("_OutlineColor", lineColor);
+            finalMat.SetColor("_OutlineColor", Color.black);
             Graphics.Blit(blurColorTarget, final, finalMat);
             //-------------------------------------------------------
         }

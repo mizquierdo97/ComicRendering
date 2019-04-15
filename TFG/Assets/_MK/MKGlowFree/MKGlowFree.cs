@@ -267,7 +267,7 @@ namespace MK.Glow
             Graphics.Blit(src, dest, compositeMaterial, 1);
         }
 
-        private RenderTexture glowTexRaw;
+        public RenderTexture glowTexRaw;
         private int srcWidth, srcHeight;
 
         private void SelectiveGlow(RenderTexture src, RenderTexture dest, RenderTexture glowTexInner, RenderTexture tmpGlowTex)

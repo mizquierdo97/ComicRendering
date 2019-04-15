@@ -8,7 +8,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: 5
   m_Shader: {fileID: 4800000, guid: 74d11cbebf8e7a04cbab58350315c708, type: 3}
-  m_ShaderKeywords: _GLOSSYREFLECTIONS_OFF _SPECULARHIGHLIGHTS_OFF
+  m_ShaderKeywords: _GLOSSYREFLECTIONS_OFF _HUE_ON _SPECULARHIGHLIGHTS_OFF _USINGNOISE_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -74,6 +74,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _HUE: 1
     - _Intensity: 1
     - _Lacunarity: 0.56
     - _Metallic: 0
@@ -91,6 +92,7 @@ Material:
     - _SpecularHighlights: 0
     - _SrcBlend: 1
     - _UVSec: 0
+    - _UsingNoise: 1
     - _ZWrite: 1
     m_Colors:
     - _BOffset: {r: 0, g: 0, b: 0, a: 0}
