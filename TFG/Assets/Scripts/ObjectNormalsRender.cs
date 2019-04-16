@@ -13,23 +13,23 @@ public class ObjectNormalsRender : MonoBehaviour
 
     void OnEnable()
     {
-        cam = GetComponent<Camera>();
-        cam.depthTextureMode = DepthTextureMode.DepthNormals;
-        cam.depthTextureMode |= DepthTextureMode.Depth;
+        //cam = GetComponent<Camera>();
+        //cam.depthTextureMode = DepthTextureMode.DepthNormals;
+        //cam.depthTextureMode |= DepthTextureMode.Depth;
 
-        int width = Screen.width * 1;
-        int height = Screen.height * 1;
+        //int width = Screen.width * 1;
+        //int height = Screen.height * 1;
 
-        objectNormals = new RenderTexture(width, height, 32, RenderTextureFormat.ARGBFloat);
-        objectDepth = new RenderTexture(width, height, 32, RenderTextureFormat.RFloat);
+        //objectNormals = new RenderTexture(width, height, 32, RenderTextureFormat.ARGBFloat);
+        //objectDepth = new RenderTexture(width, height, 32, RenderTextureFormat.RFloat);
 
-        cam.targetTexture = objectNormals;
-        cam.SetReplacementShader(ObjectNormalsShader, null);
+        //cam.targetTexture = objectNormals;
+        //cam.SetReplacementShader(ObjectNormalsShader, null);
     }
 
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
-        Graphics.Blit(source, objectDepth, ObjectDepthMat);
-        Graphics.Blit(source, destination);
+        //Graphics.Blit(source, objectDepth, ObjectDepthMat);
+        //Graphics.Blit(source, destination);
     }
 }
