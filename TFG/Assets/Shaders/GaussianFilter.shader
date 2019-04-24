@@ -48,14 +48,19 @@
 		const int mSize = 5;		
 
 		const int iter = (mSize - 1) / 2;
-		
+		int times = 1;
 		for (int i = -iter; i <= iter; ++i) {
 			for (int j = -iter; j <= iter; ++j) {
-				col += (tex2D(tex, float2(uv.x + i * blurAmount * _MainTex_TexelSize.x * depth, uv.y + j * blurAmount * _MainTex_TexelSize.y * depth)) * normpdf(float(i),float(j)));
+				float pixelDepth = (tex2D(_CameraDepth, float2(uv.x + i * blurAmount * _MainTex_TexelSize.x * depth , uv.y + j * blurAmount * _MainTex_TexelSize.y * depth)));
+				if (depth < pixelDepth)
+				{
+					col += (tex2D(tex, float2(uv.x + i * blurAmount * _MainTex_TexelSize.x * depth, uv.y + j * blurAmount * _MainTex_TexelSize.y * depth)));
+					times++;
+				}
 			}
 		}
 		//return blurred color
-		return col / 273;
+		return col / times;
 	}
 
 	fixed4 frag(v2f i) : SV_Target

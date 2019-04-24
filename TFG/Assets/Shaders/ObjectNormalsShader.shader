@@ -8,7 +8,11 @@ Shader "Custom/ObjectNormalShader" {
 		SubShader{
 		  Tags { "RenderType" = "Opaque" }
 		  CGPROGRAM
-		  #pragma surface surf Lambert vertex:vert
+		  #pragma surface surf WrapLambert vertex:vert
+
+		half4 LightingWrapLambert(SurfaceOutput s, half3 lightDir, half atten) {
+			return 0;
+		}
 		  struct Input {
 			  float2 uv_MainTex;
 			  float3 customColor;

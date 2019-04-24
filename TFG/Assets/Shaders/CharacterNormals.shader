@@ -1,68 +1,71 @@
 ﻿Shader "Hidden/CharacterNormalsShader"
 {
-	Properties
-	{
-		_MainTex("Texture", 2D) = "white" {}
+
+Properties{
+	  _MainTex("Texture", 2D) = "white" {}
+	_Color("Color", Color) = (1,1,1,1)
+			_Intensity("Intensity", float) = 1
+}
+SubShader{
+  Tags { "RenderType" = "Opaque" }
+  CGPROGRAM
+  #pragma surface surf WrapLambert vertex:vert
+
+half4 LightingWrapLambert(SurfaceOutput s, half3 lightDir, half atten) {
+	return 0;
+}
+  struct Input {
+	  float2 uvs;
+	  float3 vertex;
+  };
+
+sampler2D _CameraDepthNormalsTexture;
+
+
+	  void vert(inout appdata_full v, out Input o) {		  
+		  o.vertex = normalize(mul((float3x3)UNITY_MATRIX_MV, v.normal)) ; // (UnityObjectToWorldNormal(v.normal));
+		  o.vertex.g = 0;
+		  o.vertex.r = 0;
+		  o.uvs = v.texcoord;
+	  }
+	  sampler2D _MainTex;
+	  void surf(Input IN, inout SurfaceOutput o) {
+
+		  float4 normTex = tex2D(_CameraDepthNormalsTexture, IN.uvs);
+		  float3 normals;
+
+		  normals.r = normTex.r;
+		  normals.g = normTex.g;
+		  normals.b = normTex.b;
+
+		  float4 ret = float4(normals.r, normals.g, normals.b, 1);
+		  o.Albedo = IN.vertex;
+	  }
+	  ENDCG
 	}
-		CGINCLUDE
-#include "UnityCG.cginc"
 
+		SubShader{
+		  Tags { "RenderType" = "Transparent" }
+		  CGPROGRAM
+		  #pragma surface surf Lambert vertex:vert
+		  struct Input {
+			  float2 uv_MainTex;
+			  float3 customColor;
+		  };
 
-		sampler2D _MainTex;
-	uniform float4 _MainTex_TexelSize;
+		  void vert(inout appdata_full v, out Input o) {
 
-	sampler2D _CameraDepthNormalsTexture;
-	uniform sampler2D_float _CameraDepthTexture;
+			  UNITY_INITIALIZE_OUTPUT(Input,o);
+			  float3 baseWorldPos = mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz;
+			  o.customColor = normalize((baseWorldPos) % 1);
 
+		  }
+		  sampler2D _MainTex;
+		  void surf(Input IN, inout SurfaceOutput o) {
 
-	struct appdata
-	{
-		float4 vertex : POSITION;
-		float2 uv : TEXCOORD0;
-	};
-
-	struct v2f
-	{
-		float2 uv : TEXCOORD0;
-		float4 vertex : SV_POSITION;
-	};
-
-	v2f vert(appdata v)
-	{
-		v2f o;
-		o.vertex = UnityObjectToClipPos(v.vertex);
-		o.uv = v.uv;
-		return o;
-	}
-
-	fixed4 frag(v2f i) : SV_Target
-	{
-		float4 normTex = tex2D(_CameraDepthNormalsTexture, i.uv);		
-		float3 normals;
-
-		normals.r = normTex.r;
-		normals.g = normTex.g;
-		normals.b = normTex.b;
-
-		float4 ret = float4(normals.r, normals.g, normals.b, 1);
-		return ret;
-	}
-		ENDCG
-
-
-		SubShader
-	{
-		Pass{
-			//Cull Off ZWrite Off ZTest Always
-
-			ZTest Always Cull Off ZWrite Off
-
-
-			CGPROGRAM
-#pragma vertex vert
-#pragma fragment frag
-			ENDCG
-		}
-
-	}
+			  o.Albedo = tex2D(_MainTex, IN.uv_MainTex).rgb;
+			  o.Albedo = IN.customColor;
+		  }
+		  ENDCG
+	  }
 }

@@ -7,14 +7,18 @@ Shader "Custom/ObjectDepthShader" {
 		SubShader{
 		  Tags { "RenderType" = "Opaque" /* "RenderType" = "MKGlow"*/}
 		  CGPROGRAM
-		  #pragma surface surf Lambert vertex:vert
+		  #pragma surface surf WrapLambert vertex:vert
+
+		half4 LightingWrapLambert(SurfaceOutput s, half3 lightDir, half atten) {
+		return 0.5;
+		}
 		  struct Input {
 			  float2 uv_MainTex;
 			  float3 customColor;
 		  };
 		  void vert(inout appdata_full v, out Input o) {
 			  UNITY_INITIALIZE_OUTPUT(Input,o);
-			  o.customColor = -mul(UNITY_MATRIX_MV, v.vertex).z *_ProjectionParams.w;
+			  o.customColor = mul(UNITY_MATRIX_MV, v.vertex).z *_ProjectionParams.w;
 		  }
 		  sampler2D _MainTex;
 		  void surf(Input IN, inout SurfaceOutput o) {
@@ -24,6 +28,6 @@ Shader "Custom/ObjectDepthShader" {
 		  ENDCG
 	}
 	
-	}
+
 	 Fallback "Diffuse"
 }

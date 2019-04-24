@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-//[ExecuteInEditMode]
+[ExecuteInEditMode]
 public class CameraRenderScript : MonoBehaviour
 {
 
@@ -62,89 +62,88 @@ public class CameraRenderScript : MonoBehaviour
     RenderTexture blurTarget;
     RenderTexture final;
 
-    //public RenderTexture objectNormals;
-    //public RenderTexture objectDepth;
-    //public RenderTexture charactersNormals;
-    //public RenderTexture charactersDepth;
+    public RenderTexture objectNormals;
+    public RenderTexture objectDepth;
+    public RenderTexture charactersNormals;
+    public RenderTexture charactersDepth;
 
-    //public Shader MapNormals;
-    //public Shader MapDepth;
-    //public Shader CharactersNormals;
-    //public Shader CharactersDepth;
+    public Shader MapNormals;
+    public Shader MapDepth;
+    public Shader CharactersNormals;
+    public Shader CharactersDepth;
 
     float timer = 0.0f;
-    [Range(10,60)]
+    [Range(10, 60)]
     public int frames = 25;
 
-    ////Cameras 
-    //private Camera Cam
-    //{
-    //    get { return GetComponent<Camera>(); }
-    //}
-    //private Camera charactersCamera;
-    //private GameObject charactersCameraObject;
+    //Cameras 
+    private Camera Cam
+    {
+        get { return GetComponent<Camera>(); }
+    }
+    private Camera charactersCamera;
+    private GameObject charactersCameraObject;
 
 
-    //private GameObject CharactersCameraObject
-    //{
+    private GameObject CharactersCameraObject
+    {
 
-    //    get
-    //    {
-    //        if (!charactersCameraObject)
-    //        {
-    //            charactersCameraObject = new GameObject("selectiveGlowCameraObject");
-    //            charactersCameraObject.AddComponent<Camera>();
-    //            charactersCameraObject.hideFlags = HideFlags.HideAndDontSave;
-    //            CharactersCamera.orthographic = false;
-    //            CharactersCamera.enabled = false;
-    //            CharactersCamera.renderingPath = RenderingPath.VertexLit;
-    //            CharactersCamera.hideFlags = HideFlags.HideAndDontSave;
-    //        }
-    //        return charactersCameraObject;
-    //    }
-    //}
-    //private Camera CharactersCamera
-    //{
-    //    get
-    //    {
-    //        if (charactersCamera == null)
-    //        {
-    //            charactersCamera = CharactersCameraObject.GetComponent<Camera>();
-    //        }
-    //        return charactersCamera;
-    //    }
-    //}
+        get
+        {
+            if (!charactersCameraObject)
+            {
+                charactersCameraObject = new GameObject("selectiveGlowCameraObject");
+                charactersCameraObject.AddComponent<Camera>();
+                charactersCameraObject.hideFlags = HideFlags.HideAndDontSave;
+                CharactersCamera.orthographic = false;
+                CharactersCamera.enabled = false;
+                CharactersCamera.renderingPath = RenderingPath.VertexLit;
+                CharactersCamera.hideFlags = HideFlags.HideAndDontSave;
+            }
+            return charactersCameraObject;
+        }
+    }
+    private Camera CharactersCamera
+    {
+        get
+        {
+            if (charactersCamera == null)
+            {
+                charactersCamera = CharactersCameraObject.GetComponent<Camera>();
+            }
+            return charactersCamera;
+        }
+    }
 
-    //private void SetupGlowCamera(RenderTexture render, LayerMask layer)
-    //{
-    //    CharactersCamera.CopyFrom(Cam);
-    //    CharactersCamera.depthTextureMode = DepthTextureMode.None;
-    //    CharactersCamera.targetTexture = render;
+    private void SetupGlowCamera(RenderTexture render, LayerMask layer)
+    {
+        CharactersCamera.CopyFrom(Cam);
+        CharactersCamera.depthTextureMode = DepthTextureMode.None;
+        CharactersCamera.targetTexture = render;
 
-    //    CharactersCamera.clearFlags = CameraClearFlags.SolidColor;
-    //    CharactersCamera.rect = new Rect(0, 0, 1, 1);
-    //    CharactersCamera.backgroundColor = new Color(0, 0, 0, 0);
-    //    CharactersCamera.cullingMask = layer;
-    //    CharactersCamera.renderingPath = RenderingPath.VertexLit;
-    //}
+        CharactersCamera.clearFlags = CameraClearFlags.SolidColor;
+        CharactersCamera.rect = new Rect(0, 0, 1, 1);
+        CharactersCamera.backgroundColor = new Color(0, 0, 0, 0);
+        CharactersCamera.cullingMask = layer;
+        CharactersCamera.renderingPath = RenderingPath.VertexLit;
+    }
 
-    //void OnEnable()
-    //{
-    //    Camera camera = GetComponent<Camera>();
-    //    camera.depthTextureMode = DepthTextureMode.DepthNormals;
-    //    camera.depthTextureMode |= DepthTextureMode.Depth;
+    void OnEnable()
+    {
+        Camera camera = GetComponent<Camera>();
+        camera.depthTextureMode = DepthTextureMode.DepthNormals;
+        camera.depthTextureMode |= DepthTextureMode.Depth;
 
-    //    int width = Screen.width;
-    //    int height = Screen.height;
+        int width = Screen.width * 2;
+        int height = Screen.height * 2;
 
-    //    charactersNormals = new RenderTexture(width, height, 16, RenderTextureFormat.ARGBFloat);
-    //    //charactersDepth = new RenderTexture(width, height, 32, RenderTextureFormat.RFloat);
-    //    //objectNormals = new RenderTexture(width, height, 32, RenderTextureFormat.ARGBFloat);
-    //    //objectDepth = new RenderTexture(width, height, 32, RenderTextureFormat.RFloat);
-    //}
+        charactersNormals = new RenderTexture(width, height, 16, RenderTextureFormat.ARGBFloat);
+        charactersDepth = new RenderTexture(width, height, 32, RenderTextureFormat.RFloat);
+        objectNormals = new RenderTexture(width, height, 32, RenderTextureFormat.ARGBFloat);
+        objectDepth = new RenderTexture(width, height, 32, RenderTextureFormat.RFloat);
+    }
     void Start()
     {
-        return;
         cam = GetComponent<Camera>();
         cam.depthTextureMode = DepthTextureMode.DepthNormals;
         cam.depthTextureMode |= DepthTextureMode.Depth;
@@ -188,20 +187,18 @@ public class CameraRenderScript : MonoBehaviour
   
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
-        return;
-
         timer += Time.deltaTime;
         if (timer >= 1.0f / (float)frames)
         {
 
-            //SetupGlowCamera(objectNormals, LayerMask.GetMask("Map"));
-            //CharactersCamera.RenderWithShader(MapNormals, "RenderType");
-            //SetupGlowCamera(objectDepth, LayerMask.GetMask("Map"));
-            //CharactersCamera.RenderWithShader(MapDepth, "RenderType");
-            //SetupGlowCamera(charactersNormals, LayerMask.GetMask("Characters"));
-            //CharactersCamera.RenderWithShader(CharactersNormals, "RenderType");
-            //SetupGlowCamera(charactersDepth, LayerMask.GetMask("Characters"));
-            //CharactersCamera.RenderWithShader(CharactersDepth, "RenderType");
+            SetupGlowCamera(objectNormals, LayerMask.GetMask("Map"));
+            CharactersCamera.RenderWithShader(MapNormals, "RenderType");
+            SetupGlowCamera(objectDepth, LayerMask.GetMask("Map"));
+            CharactersCamera.RenderWithShader(MapDepth, "RenderType");
+            SetupGlowCamera(charactersNormals, LayerMask.GetMask("Characters"));
+            CharactersCamera.RenderWithShader(CharactersNormals, "RenderType");
+            SetupGlowCamera(charactersDepth, LayerMask.GetMask("Characters"));
+            CharactersCamera.RenderWithShader(CharactersDepth, "RenderType");
             timer = 0.0f;
 
             //Depth Texture-------------------------------------
@@ -226,12 +223,12 @@ public class CameraRenderScript : MonoBehaviour
             //
 
             //Normals Texture-------------------------------------
-            //normalsMat.SetTexture("_CameraDepth", depthTarget);
-            //normalsMat.SetTexture("_CharactersNormals", charactersNormals);
-            //normalsMat.SetTexture("_MapNormals", objectNormals);
-            //normalsMat.SetTexture("_CharacterDepth", charactersDepth);
-            //normalsMat.SetTexture("_MapDepth", objectDepth);
-            //Graphics.Blit(colorDistTarget, normalsTarget, normalsMat);
+            normalsMat.SetTexture("_CameraDepth", depthTarget);
+            normalsMat.SetTexture("_CharactersNormals", charactersNormals);
+            normalsMat.SetTexture("_MapNormals", objectNormals);
+            normalsMat.SetTexture("_CharacterDepth", charactersDepth);
+            normalsMat.SetTexture("_MapDepth", objectDepth);
+            Graphics.Blit(colorDistTarget, normalsTarget, normalsMat);
             //--------------------------------------------------
 
             //SOBEL--------------------------------------------------
@@ -289,11 +286,11 @@ public class CameraRenderScript : MonoBehaviour
                     Graphics.Blit(normalsTarget, destination);
                     break;
                 }
-            //case RenderTarget.ObjectNormals:
-            //    {
-            //        Graphics.Blit(objectNormals, destination);
-            //        break;
-            //    }
+            case RenderTarget.ObjectNormals:
+                {
+                    Graphics.Blit(objectNormals, destination);
+                    break;
+                }
         }
     }
 }
