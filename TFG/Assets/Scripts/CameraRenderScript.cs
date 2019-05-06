@@ -66,11 +66,13 @@ public class CameraRenderScript : MonoBehaviour
     public RenderTexture objectDepth;
     public RenderTexture charactersNormals;
     public RenderTexture charactersDepth;
+    public RenderTexture worldPosTexture;
 
     public Shader MapNormals;
     public Shader MapDepth;
     public Shader CharactersNormals;
     public Shader CharactersDepth;
+    public Shader WorldPositionShader;
 
     float timer = 0.0f;
     [Range(10, 60)]
@@ -141,6 +143,7 @@ public class CameraRenderScript : MonoBehaviour
         charactersDepth = new RenderTexture(width, height, 32, RenderTextureFormat.RFloat);
         objectNormals = new RenderTexture(width, height, 32, RenderTextureFormat.ARGBFloat);
         objectDepth = new RenderTexture(width, height, 32, RenderTextureFormat.RFloat);
+        worldPosTexture = new RenderTexture(width, height, 32, RenderTextureFormat.ARGBFloat);
     }
     void Start()
     {
@@ -199,19 +202,21 @@ public class CameraRenderScript : MonoBehaviour
             CharactersCamera.RenderWithShader(CharactersNormals, "RenderType");
             SetupGlowCamera(charactersDepth, LayerMask.GetMask("Characters"));
             CharactersCamera.RenderWithShader(CharactersDepth, "RenderType");
+            SetupGlowCamera(worldPosTexture, LayerMask.GetMask("Map", "Characters"));
+            CharactersCamera.RenderWithShader(WorldPositionShader, "RenderType");
             timer = 0.0f;
 
             //Depth Texture-------------------------------------
             Graphics.Blit(source, depthTarget, depthMat);
             //--------------------------------------------------
 
-            //Depth Texture-------------------------------------
+            //Color Texture-------------------------------------
             Graphics.Blit(source, colorTarget, colorMat);
             //--------------------------------------------------
 
             //Distortion
             distortionMat.SetInt("_Type", 0);
-            distortionMat.SetTexture("_DistortionTexture", noiseTexture);
+            distortionMat.SetTexture("_DistortionTexture", worldPosTexture);
             distortionMat.SetTexture("_CameraDepth", depthTarget);
             Graphics.Blit(colorTarget, colorDistTarget, distortionMat);
             //
@@ -247,7 +252,7 @@ public class CameraRenderScript : MonoBehaviour
 
             //Distortion
             distortionMat.SetInt("_Type", 1);
-            distortionMat.SetTexture("_DistortionTexture", noiseTexture);
+            distortionMat.SetTexture("_DistortionTexture", worldPosTexture);
             distortionMat.SetTexture("_CameraDepth", depthTarget);
             Graphics.Blit(sobelTargetColor, distortionTarget, distortionMat);
             //
@@ -288,7 +293,7 @@ public class CameraRenderScript : MonoBehaviour
                 }
             case RenderTarget.ObjectNormals:
                 {
-                    Graphics.Blit(objectNormals, destination);
+                    Graphics.Blit(distortionTarget, destination);
                     break;
                 }
         }

@@ -1,4 +1,6 @@
-﻿Shader "Hidden/ColorShader"
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Hidden/ColorShader"
 {
 	Properties
 	{
@@ -37,7 +39,7 @@
 
 	fixed4 frag(v2f i) : SV_Target
 	{
-		float4 ret = tex2D(_MainTex, i.uv);
+		float4 ret =tex2D(_MainTex, i.uv);
 		return ret;
 	}
 		ENDCG
