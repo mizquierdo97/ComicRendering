@@ -162,19 +162,24 @@
 				float size = 5.0f;
 
 
-				float smallNoise = PerlinNormal(noise, _SOctaves, float3(0,0,0), _SFrequency, _SAmplitude * (1 - depth), _SLacunarity, _SPersistence);
-				smallNoise = clamp(smallNoise, 0, 1);
+				float smallNoiseX = PerlinNormal(noise, _SOctaves, float3(0,0,0), _SFrequency, _SAmplitude * max(0, (1 - depth * 1.7)), _SLacunarity, _SPersistence);
+				smallNoiseX = smallNoiseX * 0.5 + 0.5;
+				float smallNoiseY = PerlinNormal(noise, _SOctaves, float3(10000, 10000, 0), _SFrequency, _SAmplitude  * max(0,(1 - depth * 1.7)), _SLacunarity, _SPersistence);
+				smallNoiseY = smallNoiseY * 0.5 + 0.5;
 
 				_Intensity = 10;
+				float multiply = 1.0;
 				if (_Type == 1)
 				{
-					_Intensity = 5.0f;
+					_Intensity = 10.0f;
 					size = 1.0f;
+					multiply = clamp((smallNoiseX * 1.5), 0.5f, 1.0f);
 				}
 
-				fixed4 distortion = (smallNoise * 2 ) - 1;
-				fixed4 col = tex2D(_MainTex, float2(i.uv.x + distortion.x * delta.x * _Intensity * depth, i.uv.y + distortion.y * delta.y * _Intensity * depth)) *depthVar;
-
+				float distortionX = clamp(smallNoiseX, -1, 1);
+				float distortionY = clamp(smallNoiseY, -1, 1);
+				fixed4 col = tex2D(_MainTex, float2(i.uv.x + distortionX * delta.x * _Intensity * depth, i.uv.y + distortionY * delta.y * _Intensity * depth)) *depthVar;
+				col *= multiply;
 				//return depth;
 				return col;
 			}
