@@ -24,8 +24,8 @@ sampler2D _CameraDepthNormalsTexture;
 
 	  void vert(inout appdata_full v, out Input o) {		  
 		  o.vertex = normalize(mul((float3x3)UNITY_MATRIX_MV, v.normal)) ; // (UnityObjectToWorldNormal(v.normal));
-		  o.vertex.g = 0;
-		  o.vertex.r = 0;
+		  //o.vertex.g = 0;
+		  //o.vertex.r = 0;
 		  o.uvs = v.texcoord;
 	  }
 	  sampler2D _MainTex;
@@ -39,7 +39,7 @@ sampler2D _CameraDepthNormalsTexture;
 		  normals.b = normTex.b;
 
 		  float4 ret = float4(normals.r, normals.g, normals.b, 1);
-		  o.Albedo = IN.vertex;
+		  o.Albedo = IN.vertex/2;
 	  }
 	  ENDCG
 	}

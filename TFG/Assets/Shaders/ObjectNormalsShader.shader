@@ -40,36 +40,14 @@ Shader "Custom/ObjectNormalShader" {
 			  float b = cos(pos.x + pos.y + pos.z);
 
 			  float A = pos.x + pos.y + pos.z;
-			  float B = 2* A;
-			  float C = 3 * A;
+			  float B = 3* A;
+			  float C = 5 * A;
 			  float3x3 mat = {
 				  cos(B) * cos(C),-cos(B) * sin(C) * cos(A) + sin(B) * sin(A), cos(B) * sin(C) * sin(A) + sin(B) * cos(A),
 				  sin(C),cos(C) * cos(A),-cos(C) * sin(A),
 				  sin(B)*cos(C),sin(B) * sin(C) * cos(A) + cos(B) * sin(A),-sin(B) * sin(C) * sin(A) + cos(B) * cos(A)
 
 			  };
-
-
-			  float xR = cos(cos(norm.x) + cos(pos.x * 2 * PI )) * 2;
-			  float xG = cos(pos.y * 2 * PI + (2 * PI) / 3/* + pos.x*/) * 0;
-			  float xB = cos((pos.z * 2 * PI) + (2*(2 * PI))/3/* + pos.x*/) * 0;
-
-			  float yR = cos(norm.y* 2 * PI) * 2;
-			  float yG = cos(norm.y * 2 * PI + (2 * PI) / 3/* + pos.x*/) * 2;
-			  float yB = cos((norm.y * 2 * PI) + (2 * (2 * PI)) / 3/* + pos.x*/) * 2;
-
-			  float zR = cos(norm.z * 2 * PI) * 2;
-			  float zG = cos(norm.z * 2 * PI + (2 * PI) / 3/* + pos.x*/) * 2;
-			  float zB = cos((norm.z * 2 * PI) + (2 * (2 * PI)) / 3/* + pos.x*/) * 2;
-
-			  //float3 RGB = clamp(float3(R, G, B),0,1);
-
-			  float3 xRGB = clamp(float3(xR, xG, xB), 0, 1);
-			  float3 yRGB = clamp(float3(yR, yG, yB), 0, 1);
-			  float3 zRGB = clamp(float3(zR, zG, zB), 0, 1);
-
-			  ////norm = clamp(norm + RGB, 0, 1);
-
 
 
 			  o.customColor = lerp(abs(mul(mat, v.normal)), float3(sin(A), sin(B), sin(C))*0.5 + 0.5, _Intensity);
