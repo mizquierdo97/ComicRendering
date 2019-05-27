@@ -1,4 +1,8 @@
-﻿
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+
 Shader "Custom/PorldPositionShader" {
 	Properties{
 	  _MainTex("Texture", 2D) = "white" {}
@@ -19,6 +23,7 @@ Shader "Custom/PorldPositionShader" {
 		  void vert(inout appdata_full v, out Input o) {
 			  UNITY_INITIALIZE_OUTPUT(Input,o);
 			  o.customColor = mul(unity_ObjectToWorld, v.vertex);
+			 
 		  }
 		  sampler2D _MainTex;
 		  void surf(Input IN, inout SurfaceOutput o) {

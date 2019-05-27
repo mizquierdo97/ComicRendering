@@ -151,20 +151,27 @@
 				float2 delta = _MainTex_TexelSize;
 
 				float3 noise = tex2D(_DistortionTexture, i.uv);
-				float depth1 = tex2D(_CameraDepth, i.uv + float2(delta.x, delta.y) * 10);
-				float depth2 = tex2D(_CameraDepth, i.uv + float2(-delta.x, delta.y) * 10);
-				float depth3 = tex2D(_CameraDepth, i.uv + float2(delta.x, -delta.y) * 10);
-				float depth4 = tex2D(_CameraDepth, i.uv + float2(-delta.x, -delta.y) * 10);
+				float depth1 = tex2D(_CameraDepth, i.uv + float2(delta.x, delta.y) );
+				float depth2 = tex2D(_CameraDepth, i.uv + float2(-delta.x, delta.y));
+				float depth3 = tex2D(_CameraDepth, i.uv + float2(delta.x, -delta.y) );
+				float depth4 = tex2D(_CameraDepth, i.uv + float2(-delta.x, -delta.y));
 				//float depth = (depth1 + depth2 + depth3 + depth4) / 4;
-				float depth = min(1,min(depth1, min(depth2, min(depth3, depth4))) + 0.2);
+				float depth = max(depth1, max(depth2, max(depth3, depth4)));// min(1, min(depth1, min(depth2, min(depth3, depth4))) + 0.2);
 				//depth = tex2D(_CameraDepth, i.uv);
-				float depthVar = 1.0f;
 				float size = 5.0f;
 
-
-				float smallNoiseX = PerlinNormal(noise, _SOctaves, float3(0,0,0), _SFrequency, _SAmplitude * max(0, (1 - depth * 1.7)), _SLacunarity, _SPersistence);
+				float minAmplitude = 0.0f;
+				if (noise.x <= 0.5f && noise.x >= -0.5f /*&& noise.y <= 0.01f && noise.y >= -0.01f && noise.z <= 0.01f && noise.z >= -0.01f */)
+				{
+					noise.x = i.uv.x * 10;
+					noise.y = i.uv.y * 10;
+					noise.z = i.uv.y * 10;
+					minAmplitude = 0.5f;
+				}
+				
+				float smallNoiseX = PerlinNormal(noise, _SOctaves, float3(0,0,0), _SFrequency, _SAmplitude * max(minAmplitude, (1 - depth * 1.7)), _SLacunarity, _SPersistence);
 				smallNoiseX = smallNoiseX * 0.5 + 0.5;
-				float smallNoiseY = PerlinNormal(noise, _SOctaves, float3(10000, 10000, 0), _SFrequency, _SAmplitude  * max(0,(1 - depth * 1.7)), _SLacunarity, _SPersistence);
+				float smallNoiseY = PerlinNormal(noise, _SOctaves, float3(10000, 10000, 0), _SFrequency, _SAmplitude * max(minAmplitude,(1 - depth * 1.7)), _SLacunarity, _SPersistence);
 				smallNoiseY = smallNoiseY * 0.5 + 0.5;
 
 				_Intensity = 10;
@@ -178,10 +185,10 @@
 
 				float distortionX = clamp(smallNoiseX, -1, 1);
 				float distortionY = clamp(smallNoiseY, -1, 1);
-				fixed4 col = tex2D(_MainTex, float2(i.uv.x + distortionX * delta.x * _Intensity * depth, i.uv.y + distortionY * delta.y * _Intensity * depth)) *depthVar;
+				fixed4 col = tex2D(_MainTex, float2(i.uv.x + distortionX * delta.x * _Intensity * depth, i.uv.y + distortionY * delta.y * _Intensity * depth));
 				col *= multiply;
 				//return depth;
-				return col;
+				return col;// float4(noise, 1);// float4(noise, 1);
 			}
 			ENDCG
 		}
