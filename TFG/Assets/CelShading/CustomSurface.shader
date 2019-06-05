@@ -106,6 +106,8 @@
 
 		float3 Saturation(float _saturation, float3 col)
 		{
+			float P = sqrt(col.r * col.r + col.g * col.g + col.b * col.b);
+			return float3(P + ((col.r - P)* _saturation), P + ((col.g - P)* _saturation), P + ((col.b - P)* _saturation));
 			return float3(0.5 * (1 - _saturation) + col.r * _saturation, 0.5 * (1 - _saturation) + col.g * _saturation, 0.5 * (1 - _saturation) + col.b * _saturation);
 		}
 
@@ -288,7 +290,7 @@
 			float3 tex = tex2D(_MainTex, IN.uv_MainTex);
 
 			//DEPTH
-			float depth =  IN.depth;
+			float depth = Linear01Depth(IN.depth);
 
 			//COLOR * TEXTURE
 			float3 color = _Color *tex;
@@ -308,9 +310,22 @@
 			
 			//Maybe not needed
 			float noiseColor;
-			noiseColor = PerlinNormal(IN.pos, _BOctaves, _BOffset, _BFrequency / 10, _BAmplitude, _BLacunarity, _BPersistence);
-
+			float a = clamp(PerlinNormal(IN.pos, _BOctaves, _BOffset, 1, 1, 0.8, _BPersistence), 0.8, 1);
+			noiseColor = PerlinNormal(IN.pos, _BOctaves, _BOffset, 20 * a, 0.1, 1, _BPersistence);
+			noiseColor = clamp(noiseColor, 0, 1);
+			noiseColor *= noiseColor;
+			noiseColor = pow(noiseColor, 2);
 			//////
+
+						//COLOR HUE SHIFT
+			if (_HUE)
+			{
+				float3 hsv = rgb_to_hsv_no_clip(Saturation(clamp(noiseColor, 1,1.2), color.xyz));
+				hsv.x += noiseColor / 100;
+				if (hsv.x > 1.0) { hsv.x -= 1.0; }
+				color = half3(hsv_to_rgb(hsv)) * clamp( 1- noiseColor, 0.98, 1);
+			}
+			//
 
 			bigNoise = bigNoise / 3;
 
