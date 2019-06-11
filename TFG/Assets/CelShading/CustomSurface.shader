@@ -1,9 +1,16 @@
-﻿Shader "Custom/CustomSurface" {
+﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
+
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
+
+Shader "Custom/CustomSurface" {
 
 	Properties {
 		_Color ("Color", Color) = (1,1,1,1)
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
 		_Intensity("Intensity", Range(0,1)) = 1.0
+		_ShadowIntensity("Shadow Intensity", Range(0,1)) = 1.0
 
 		_BOctaves(" Big Noise Octaves", Float) = 9.6
 		_BFrequency(" Big Noise Frequency", Float) = 1.0
@@ -192,6 +199,7 @@
 		float _SPersistence;
 		bool _UsingNoise;
 		bool _HUE;
+		float _ShadowIntensity;
 
 		float _Div;
 			half4 LightingWrapLambert(SurfaceOutput s, half3 lightDir, half atten) {
@@ -204,8 +212,11 @@
 			float mainIntensity = 1.0f;
 			float secondIntensity = 0.5;
 			float thirdIntensity = 0.5;
-			float saturation = 1.0f;			
-
+			float saturation = 1.0f;	
+		
+			secondIntensity = _ShadowIntensity * secondIntensity + (1 - _ShadowIntensity) * mainIntensity;
+			thirdIntensity = _ShadowIntensity * thirdIntensity + (1 - _ShadowIntensity) * mainIntensity;
+			//thirdIntensity = -1.0f;
 			if (NdotL <= firstSlope)
 			{
 				
@@ -245,6 +256,7 @@
 			//COLOR HUE SHIFT
 			if (_HUE)
 			{
+				saturation = max(1,saturation *_ShadowIntensity);
 				float3 hsv = rgb_to_hsv_no_clip(Saturation(saturation, color.xyz * clamp(color, 0.0, 1)));
 				hsv.x += (saturation - 1) / 8;
 				if (hsv.x > 1.0) { hsv.x -= 1.0; }
@@ -267,21 +279,82 @@
 		};
 		
 
+		float4x4 PerspectiveOffCenter( float left, float right, float bottom, float top, float near, float far)
+		{
+			float x = (2.0 * near) / (right - left);
+			float y = (2.0 * near) / (top - bottom);
+			float a = (right + left) / (right - left);
+			float b = (top + bottom) / (top - bottom);
+			float c = -(far + near) / (far - near);
+			float d = -(2.0 * far * near) / (far - near);
+			float e = -1.0;
+
+			float4x4 m;
+			m[0,0] = x;  m[0,1] = 0.0;  m[0,2] = a;   m[0,3] = 0.0;
+			m[1,0] = 0.0;  m[1,1] = y;  m[1,2] = b;   m[1,3] = 0.0;
+			m[2,0] = 0.0;  m[2,1] = 0.0;  m[2,2] = c;   m[2,3] = d;
+			m[3,0] = 0.0;  m[3,1] = 0.0;  m[3,2] = e;   m[3,3] = 0.0;
+			return m;
+		}
+
+		float4x4 SetVanishingPoint() {
+			float4x4 m = unity_CameraProjection;
+			float w = 2 * 0.1 / m[0,0];
+			float h = 2 * 0.1 / m[1,1];
+
+			float left = -w / 2 - 0.5;
+			float right = left + w;
+			float bottom = -h / 2 - 0.5;
+			float top = bottom + h;
+
+			return PerspectiveOffCenter(left, right, bottom, top, 0.01, 300.0f);
+		}
+
 		sampler2D_float _CameraDepthTexture;
 		float4 _CameraDepthTexture_TexelSize;
 
 		void vert(inout appdata_full v, out Input OUT)
 		{
+			
 			UNITY_INITIALIZE_OUTPUT(Input, OUT);		
 
+			//v.vertex = mul(unity_CameraInvProjection, v.vertex);
+			//v.vertex = mul(m, v.vertex);
 			//WORLD PIXEL POSITION
 			OUT.pos = mul(unity_ObjectToWorld, v.vertex).xyz;
 
 			//WORLD OBJECT POSITION
-			OUT.objPos =  mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz;
-
+			OUT.objPos =  mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz ;
 			//DEPTH
-			COMPUTE_EYEDEPTH(OUT.depth);
+			//COMPUTE_EYEDEPTH(OUT.depth);
+
+			float4 mw = mul(unity_ObjectToWorld, v.vertex);
+
+
+			float4 mv = mul(UNITY_MATRIX_V, mw);
+
+
+			float dz = sin(20)*0.2;
+
+
+			float c = cos(dz);
+			float s = sin(dz);
+
+
+
+
+			//mv.z += frac(2.5)*1.;
+
+
+			float4 m = mul(UNITY_MATRIX_P, mv);
+
+			v.vertex = m;
+			v.vertex.w /= 0.5 + mw.y*frac(2.5) / 20.;
+
+
+
+
+
 		}
 
 		void surf(Input IN, inout SurfaceOutput o) {
@@ -321,7 +394,7 @@
 			if (_HUE)
 			{
 				float3 hsv = rgb_to_hsv_no_clip(Saturation(clamp(noiseColor, 1,1.2), color.xyz));
-				hsv.x += noiseColor / 100;
+				hsv.x +=  noiseColor / 100;
 				if (hsv.x > 1.0) { hsv.x -= 1.0; }
 				color = half3(hsv_to_rgb(hsv)) * clamp( 1- noiseColor, 0.98, 1);
 			}
