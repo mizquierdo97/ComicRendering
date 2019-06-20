@@ -328,33 +328,6 @@ Shader "Custom/CustomSurface" {
 			//DEPTH
 			//COMPUTE_EYEDEPTH(OUT.depth);
 
-			float4 mw = mul(unity_ObjectToWorld, v.vertex);
-
-
-			float4 mv = mul(UNITY_MATRIX_V, mw);
-
-
-			float dz = sin(20)*0.2;
-
-
-			float c = cos(dz);
-			float s = sin(dz);
-
-
-
-
-			//mv.z += frac(2.5)*1.;
-
-
-			float4 m = mul(UNITY_MATRIX_P, mv);
-
-			v.vertex = m;
-			v.vertex.w /= 0.5 + mw.y*frac(2.5) / 20.;
-
-
-
-
-
 		}
 
 		void surf(Input IN, inout SurfaceOutput o) {
@@ -396,7 +369,7 @@ Shader "Custom/CustomSurface" {
 				float3 hsv = rgb_to_hsv_no_clip(Saturation(clamp(noiseColor, 1,1.2), color.xyz));
 				hsv.x +=  noiseColor / 100;
 				if (hsv.x > 1.0) { hsv.x -= 1.0; }
-				color = half3(hsv_to_rgb(hsv)) * clamp( 1- noiseColor, 0.98, 1);
+				//color = half3(hsv_to_rgb(hsv)) * clamp( 1- noiseColor, 0.98, 1);
 			}
 			//
 
