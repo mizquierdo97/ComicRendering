@@ -97,7 +97,7 @@ Material:
     - _SLacunarity: 1.98
     - _SOctaves: 3
     - _SPersistence: 0.57
-    - _ShadowIntensity: 1
+    - _ShadowIntensity: 0.581
     - _Shininess: 11.97
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
