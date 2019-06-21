@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Mat29
+  m_Name: Mat14
   m_Shader: {fileID: 4800000, guid: 74d11cbebf8e7a04cbab58350315c708, type: 3}
   m_ShaderKeywords: _EMISSION _HUE_ON _USINGNOISE_ON
   m_LightmapFlags: 1
@@ -67,37 +67,37 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Amplitude: 0.15
+    - _Amplitude: 0.66
     - _BAmplitude: 0.2
     - _BFrequency: 5.44
     - _BLacunarity: 0.5
-    - _BOctaves: 0
+    - _BOctaves: 7
     - _BPersistence: 1.75
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _Div: 2137
     - _DstBlend: 0
-    - _Frequency: 170.06
+    - _Frequency: 5.44
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 1
     - _HUE: 1
     - _HueShift: 0
-    - _Intensity: 0.698
-    - _Lacunarity: 0.46
+    - _Intensity: 0
+    - _Lacunarity: 0.5
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
-    - _Octaves: 11.3
+    - _Octaves: 7.16
     - _Parallax: 0.02
-    - _Persistence: 2.17
+    - _Persistence: 1.52
     - _SAmplitude: 0.97
     - _SFrequency: 1.18
     - _SLacunarity: 1.98
-    - _SOctaves: 0
+    - _SOctaves: 3
     - _SPersistence: 0.57
-    - _ShadowIntensity: 0.053
+    - _ShadowIntensity: 0.552
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -105,10 +105,10 @@ Material:
     - _UsingNoise: 1
     - _ZWrite: 1
     m_Colors:
-    - _BOffset: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 1, g: 0.93771785, b: 0.4481132, a: 1}
+    - _BOffset: {r: 4.51, g: 0.09, b: 0, a: 0}
+    - _Color: {r: 0.23137257, g: 0.6627451, b: 0.7176471, a: 1}
     - _Div: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0.16037738, g: 0.16037738, b: 0.16037738, a: 1}
-    - _Offset: {r: 0, g: 0, b: 0, a: 0}
+    - _Offset: {r: 36.06, g: 12.68, b: 14.56, a: 0}
     - _SOffset: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}

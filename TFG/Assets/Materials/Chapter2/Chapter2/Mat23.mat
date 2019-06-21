@@ -6,10 +6,10 @@ Material:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Mat29
+  m_Name: Mat23
   m_Shader: {fileID: 4800000, guid: 74d11cbebf8e7a04cbab58350315c708, type: 3}
-  m_ShaderKeywords: _EMISSION _HUE_ON _USINGNOISE_ON
-  m_LightmapFlags: 1
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -54,15 +54,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Ramp:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ToonShade:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -71,7 +63,7 @@ Material:
     - _BAmplitude: 0.2
     - _BFrequency: 5.44
     - _BLacunarity: 0.5
-    - _BOctaves: 0
+    - _BOctaves: 6.42
     - _BPersistence: 1.75
     - _BumpScale: 1
     - _Cutoff: 0.5
@@ -82,9 +74,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 1
-    - _HUE: 1
-    - _HueShift: 0
-    - _Intensity: 0.698
+    - _Intensity: 1
     - _Lacunarity: 0.46
     - _Metallic: 0
     - _Mode: 0
@@ -95,20 +85,18 @@ Material:
     - _SAmplitude: 0.97
     - _SFrequency: 1.18
     - _SLacunarity: 1.98
-    - _SOctaves: 0
+    - _SOctaves: 3
     - _SPersistence: 0.57
-    - _ShadowIntensity: 0.053
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _UsingNoise: 1
     - _ZWrite: 1
     m_Colors:
     - _BOffset: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 1, g: 0.93771785, b: 0.4481132, a: 1}
+    - _Color: {r: 1, g: 0.9982057, b: 0.5424528, a: 1}
     - _Div: {r: 0, g: 0, b: 0, a: 0}
-    - _EmissionColor: {r: 0.16037738, g: 0.16037738, b: 0.16037738, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Offset: {r: 0, g: 0, b: 0, a: 0}
     - _SOffset: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}

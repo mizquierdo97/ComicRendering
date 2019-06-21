@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Mat29
+  m_Name: Mat24
   m_Shader: {fileID: 4800000, guid: 74d11cbebf8e7a04cbab58350315c708, type: 3}
   m_ShaderKeywords: _EMISSION _HUE_ON _USINGNOISE_ON
   m_LightmapFlags: 1
@@ -84,7 +84,7 @@ Material:
     - _GlossyReflections: 1
     - _HUE: 1
     - _HueShift: 0
-    - _Intensity: 0.698
+    - _Intensity: 0
     - _Lacunarity: 0.46
     - _Metallic: 0
     - _Mode: 0
@@ -97,7 +97,7 @@ Material:
     - _SLacunarity: 1.98
     - _SOctaves: 0
     - _SPersistence: 0.57
-    - _ShadowIntensity: 0.053
+    - _ShadowIntensity: 0.449
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -106,7 +106,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BOffset: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 1, g: 0.93771785, b: 0.4481132, a: 1}
+    - _Color: {r: 0.13333334, g: 0.28235295, b: 0.5254902, a: 1}
     - _Div: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0.16037738, g: 0.16037738, b: 0.16037738, a: 1}
     - _Offset: {r: 0, g: 0, b: 0, a: 0}
