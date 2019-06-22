@@ -8,8 +8,8 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: Mat15
   m_Shader: {fileID: 4800000, guid: 74d11cbebf8e7a04cbab58350315c708, type: 3}
-  m_ShaderKeywords: _EMISSION _HUE_ON _USINGNOISE_ON
-  m_LightmapFlags: 1
+  m_ShaderKeywords: _HUE_ON _USINGNOISE_ON
+  m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -69,7 +69,7 @@ Material:
     m_Floats:
     - _Amplitude: 0.15
     - _BAmplitude: 0.2
-    - _BFrequency: 5.44
+    - _BFrequency: 3.09
     - _BLacunarity: 0.5
     - _BOctaves: 7
     - _BPersistence: 1.75

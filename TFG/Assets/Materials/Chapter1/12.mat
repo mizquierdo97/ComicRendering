@@ -74,7 +74,8 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _Intensity: 1
+    - _HUE: 1
+    - _Intensity: 0
     - _Lacunarity: 0.56
     - _Metallic: 0
     - _Mode: 0
@@ -87,14 +88,16 @@ Material:
     - _SLacunarity: 2.22
     - _SOctaves: 4.13
     - _SPersistence: 0.41
+    - _ShadowIntensity: 0.207
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 0
     - _SrcBlend: 1
     - _UVSec: 0
+    - _UsingNoise: 1
     - _ZWrite: 1
     m_Colors:
     - _BOffset: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 0.039215688, g: 0.38823533, b: 0.5686275, a: 1}
+    - _Color: {r: 0.17328231, g: 0.4692017, b: 0.6226415, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Offset: {r: 0, g: 0, b: 0, a: 0}
     - _SOffset: {r: 0, g: 0, b: 0, a: 0}

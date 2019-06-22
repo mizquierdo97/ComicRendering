@@ -8,7 +8,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: Mat23
   m_Shader: {fileID: 4800000, guid: 74d11cbebf8e7a04cbab58350315c708, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: _HUE_ON _USINGNOISE_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -74,6 +74,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 1
+    - _HUE: 1
     - _Intensity: 1
     - _Lacunarity: 0.46
     - _Metallic: 0
@@ -87,14 +88,16 @@ Material:
     - _SLacunarity: 1.98
     - _SOctaves: 3
     - _SPersistence: 0.57
+    - _ShadowIntensity: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
+    - _UsingNoise: 1
     - _ZWrite: 1
     m_Colors:
     - _BOffset: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 1, g: 0.9982057, b: 0.5424528, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Div: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Offset: {r: 0, g: 0, b: 0, a: 0}

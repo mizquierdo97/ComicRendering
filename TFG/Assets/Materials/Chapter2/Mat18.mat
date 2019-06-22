@@ -8,8 +8,8 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: Mat18
   m_Shader: {fileID: 4800000, guid: 74d11cbebf8e7a04cbab58350315c708, type: 3}
-  m_ShaderKeywords: _EMISSION _HUE_ON _USINGNOISE_ON
-  m_LightmapFlags: 1
+  m_ShaderKeywords: _HUE_ON _USINGNOISE_ON
+  m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -97,7 +97,7 @@ Material:
     - _SLacunarity: 1.98
     - _SOctaves: 3
     - _SPersistence: 0.57
-    - _ShadowIntensity: 1
+    - _ShadowIntensity: 0.416
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -106,7 +106,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BOffset: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 0.54509807, g: 0.7294118, b: 0.69411767, a: 1}
+    - _Color: {r: 0.21529014, g: 0.7735849, b: 0.65579844, a: 1}
     - _Div: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0.16037738, g: 0.16037738, b: 0.16037738, a: 1}
     - _Offset: {r: 0, g: 0, b: 0, a: 0}
