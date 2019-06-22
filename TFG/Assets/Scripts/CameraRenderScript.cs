@@ -23,7 +23,7 @@ public class CameraRenderScript : MonoBehaviour
     public Material colorMat;
     public Material depthMat;
     public Material normalsMat;
-    public Material gaussianProcessMat;
+    //public Material gaussianProcessMat;
     public Material sobelProcessMat;
     public Material distortionMat;
     public Material noiseReductionMat;
@@ -131,7 +131,10 @@ public class CameraRenderScript : MonoBehaviour
     }
 
     void OnEnable()
-    {
+    { 
+    }
+    void Start()
+    { 
         Camera camera = GetComponent<Camera>();
         camera.depthTextureMode = DepthTextureMode.DepthNormals;
         camera.depthTextureMode |= DepthTextureMode.Depth;
@@ -144,14 +147,10 @@ public class CameraRenderScript : MonoBehaviour
         objectNormals = new RenderTexture(width, height, 32, RenderTextureFormat.ARGBFloat);
         objectDepth = new RenderTexture(width, height, 32, RenderTextureFormat.RFloat);
         worldPosTexture = new RenderTexture(width, height, 32, RenderTextureFormat.ARGBFloat);
-    }
-    void Start()
-    {
+
         cam = GetComponent<Camera>();
         cam.depthTextureMode = DepthTextureMode.DepthNormals;
         cam.depthTextureMode |= DepthTextureMode.Depth;
-        int width = Screen.width * 2;
-        int height = Screen.height * 2;
 
 
         depthTarget = new RenderTexture(width, height, 32, RenderTextureFormat.RFloat);
@@ -222,9 +221,9 @@ public class CameraRenderScript : MonoBehaviour
             //
 
             //blur
-            gaussianProcessMat.SetTexture("_CameraDepth", depthTarget);
-            gaussianProcessMat.SetFloat("_Intensity", outlineBlurInt);
-            Graphics.Blit(colorDistTarget, blurColorTarget, gaussianProcessMat);
+           // gaussianProcessMat.SetTexture("_CameraDepth", depthTarget);
+           // gaussianProcessMat.SetFloat("_Intensity", outlineBlurInt);
+           // Graphics.Blit(colorDistTarget, blurColorTarget, gaussianProcessMat);
             //
 
             //Normals Texture-------------------------------------
@@ -261,7 +260,7 @@ public class CameraRenderScript : MonoBehaviour
             finalMat.SetTexture("_CameraDepth", depthTarget);
             finalMat.SetTexture("_OutlineTex", distortionTarget);
             finalMat.SetColor("_OutlineColor", Color.black);
-            Graphics.Blit(blurColorTarget, final, finalMat);
+            Graphics.Blit(colorDistTarget, final, finalMat);
             //-------------------------------------------------------
         }
         switch (mode)
