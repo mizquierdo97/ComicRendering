@@ -19,8 +19,8 @@ public class SelectMesh : MonoBehaviour {
     // Use this for initialization
     void Start () {
         dropdown = GetComponent<Dropdown>();
-        prop1.SetActive(true);
-        actualGO = prop1;
+        prop3.SetActive(true);
+        actualGO = prop3;
 
     }
 	
