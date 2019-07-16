@@ -14,8 +14,8 @@ public class CameraRenderScript : MonoBehaviour
         Depth,
         Normals,
         Sobel,
-        LineBlur,
-        ObjectNormals,
+        Distortion,
+        DepthGradient,
     }
 
 
@@ -290,7 +290,12 @@ public class CameraRenderScript : MonoBehaviour
                     Graphics.Blit(normalsTarget, destination);
                     break;
                 }
-            case RenderTarget.ObjectNormals:
+            case RenderTarget.Distortion:
+                {
+                    Graphics.Blit(distortionTarget, destination);
+                    break;
+                }
+            case RenderTarget.DepthGradient:
                 {
                     Graphics.Blit(distortionTarget, destination);
                     break;
