@@ -26,6 +26,7 @@ Shader "Custom/CustomSurface" {
 		_Div("DepthInstensity", Float) = 1.0
 		[MaterialToggle] _UsingNoise("Using Noise", Float) = 1.0
 		[MaterialToggle] _HUE("HUE Shift", Float) = 1.0
+			_Angle ("Angle", Range(0,360)) = 0.0
 	}
 
 		CGINCLUDE
@@ -168,7 +169,15 @@ Shader "Custom/CustomSurface" {
 
 				return (RGB);
 			}
-		
+
+			float4 RotateAroundYInDegrees(float4 vertex, float degrees)
+			{
+				float alpha = degrees * UNITY_PI / 180.0;
+				float sina, cosa;
+				sincos(alpha, sina, cosa);
+				float2x2 m = float2x2(cosa, -sina, sina, cosa);
+				return float4(mul(m, vertex.xz), vertex.yw).xzyw;
+			}
 		//
 
 		ENDCG
@@ -200,7 +209,7 @@ Shader "Custom/CustomSurface" {
 		bool _UsingNoise;
 		bool _HUE;
 		float _ShadowIntensity;
-
+		uniform float _Angle;
 		float _Div;
 			half4 LightingWrapLambert(SurfaceOutput s, half3 lightDir, half atten) {
 			half NdotL = dot(s.Normal, lightDir);	
@@ -321,8 +330,9 @@ Shader "Custom/CustomSurface" {
 			//v.vertex = mul(unity_CameraInvProjection, v.vertex);
 			//v.vertex = mul(m, v.vertex);
 			//WORLD PIXEL POSITION
+			v.vertex = RotateAroundYInDegrees(v.vertex, _Angle);
 			OUT.pos = mul(unity_ObjectToWorld, v.vertex).xyz;
-
+			
 			//WORLD OBJECT POSITION
 			OUT.objPos =  mul(unity_ObjectToWorld, float4(0, 0, 0, 1)).xyz ;
 			//DEPTH

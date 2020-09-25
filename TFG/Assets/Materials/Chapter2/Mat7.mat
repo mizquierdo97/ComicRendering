@@ -68,6 +68,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _Amplitude: 0.15
+    - _Angle: 360
     - _BAmplitude: 0.2
     - _BFrequency: 5.44
     - _BLacunarity: 0.5
@@ -84,7 +85,7 @@ Material:
     - _GlossyReflections: 1
     - _HUE: 1
     - _HueShift: 0
-    - _Intensity: 0
+    - _Intensity: 0.442
     - _Lacunarity: 0.46
     - _Metallic: 0
     - _Mode: 0
@@ -97,7 +98,7 @@ Material:
     - _SLacunarity: 1.98
     - _SOctaves: 3
     - _SPersistence: 0.57
-    - _ShadowIntensity: 0.84
+    - _ShadowIntensity: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1

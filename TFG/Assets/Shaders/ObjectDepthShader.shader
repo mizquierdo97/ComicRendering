@@ -10,7 +10,7 @@ Shader "Custom/ObjectDepthShader" {
 		  #pragma surface surf WrapLambert vertex:vert
 
 		half4 LightingWrapLambert(SurfaceOutput s, half3 lightDir, half atten) {
-		return 0.5;
+		return s.Albedo;
 		}
 		  struct Input {
 			  float2 uv_MainTex;
@@ -22,7 +22,6 @@ Shader "Custom/ObjectDepthShader" {
 		  }
 		  sampler2D _MainTex;
 		  void surf(Input IN, inout SurfaceOutput o) {
-			  o.Albedo = tex2D(_MainTex, IN.uv_MainTex).rgb;
 			  o.Albedo = IN.customColor;
 		  }
 		  ENDCG

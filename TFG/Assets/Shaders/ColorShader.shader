@@ -13,9 +13,8 @@ Shader "Hidden/ColorShader"
 		sampler2D _MainTex;
 	uniform float4 _MainTex_TexelSize;
 
-	sampler2D _CameraDepthNormalsTexture;
-	uniform sampler2D_float _CameraDepthTexture;
-	uniform sampler2D _CameraDepth;
+	sampler2D _OrientationTex;
+	sampler2D _VertexPosTex;
 
 	struct appdata
 	{
@@ -39,7 +38,9 @@ Shader "Hidden/ColorShader"
 
 	fixed4 frag(v2f i) : SV_Target
 	{
-		float4 ret =tex2D(_MainTex, i.uv);
+
+		float4 ret = tex2D(_MainTex, i.uv);
+
 		return ret;
 	}
 		ENDCG

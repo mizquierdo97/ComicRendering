@@ -76,7 +76,8 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _Intensity: 0
+    - _HUE: 1
+    - _Intensity: 0.463
     - _Lacunarity: 0.56
     - _Metallic: 0
     - _Mode: 0
@@ -89,6 +90,7 @@ Material:
     - _SLacunarity: 2.22
     - _SOctaves: 4.13
     - _SPersistence: 0.41
+    - _ShadowIntensity: 0.515
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 0
     - _SrcBlend: 1

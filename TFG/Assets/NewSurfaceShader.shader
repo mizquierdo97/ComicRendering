@@ -2,6 +2,7 @@
 Shader "HSB_HSV_Colorpicker" {
 	Properties{
 		_MainTex("Texture", 2D) = "white" {}
+			_MaskText("Texture", 2D) = "white" {}
 		_HueShift("HueShift", Float) = 0
 	}
 		SubShader{

@@ -40,9 +40,9 @@ MonoBehaviour:
         stationaryBlending: 0.99
         motionBlending: 0.22
   ambientOcclusion:
-    m_Enabled: 0
+    m_Enabled: 1
     m_Settings:
-      intensity: 0
+      intensity: 0.95
       radius: 1.84
       sampleCount: 16
       downsampling: 0
@@ -80,8 +80,8 @@ MonoBehaviour:
     m_Enabled: 0
     m_Settings:
       shutterAngle: 360
-      sampleCount: 22
-      frameBlending: 0.343
+      sampleCount: 25
+      frameBlending: 1
   eyeAdaptation:
     m_Enabled: 0
     m_Settings:
@@ -109,7 +109,7 @@ MonoBehaviour:
         texture: {fileID: 0}
         intensity: 3
   colorGrading:
-    m_Enabled: 0
+    m_Enabled: 1
     m_Settings:
       tonemapping:
         tonemapper: 0
@@ -121,10 +121,10 @@ MonoBehaviour:
         neutralWhiteClip: 10
       basic:
         postExposure: 0
-        temperature: 0
+        temperature: 5
         tint: 0
-        hueShift: 0
-        saturation: 1
+        hueShift: 5
+        saturation: 0.97
         contrast: 1
       channelMixer:
         red: {x: 1, y: 0, z: 0}
@@ -134,13 +134,13 @@ MonoBehaviour:
       colorWheels:
         mode: 0
         log:
-          slope: {r: 1, g: 1, b: 1, a: 0}
+          slope: {r: 0.99075925, g: 1, b: 0.9624004, a: 0}
           power: {r: 1, g: 1, b: 1, a: 0}
           offset: {r: 1, g: 1, b: 1, a: 0}
         linear:
-          lift: {r: 1, g: 1, b: 1, a: 0.000000009582218}
-          gamma: {r: 1, g: 1, b: 1, a: -0.0000000015225983}
-          gain: {r: 1, g: 1, b: 1, a: 0}
+          lift: {r: 1, g: 0.35082275, b: 0.85593396, a: 0.000000009582218}
+          gamma: {r: 1, g: 0.9860094, b: 0.99650294, a: -0.0000000015225983}
+          gain: {r: 0.980771, g: 0.9810806, b: 1, a: 0}
       curves:
         master:
           curve:
@@ -310,12 +310,12 @@ MonoBehaviour:
       spectralTexture: {fileID: 0}
       intensity: 1
   grain:
-    m_Enabled: 0
+    m_Enabled: 1
     m_Settings:
-      colored: 1
-      intensity: 1
+      colored: 0
+      intensity: 0
       size: 1
-      luminanceContribution: 0.8
+      luminanceContribution: 0.885
   vignette:
     m_Enabled: 0
     m_Settings:

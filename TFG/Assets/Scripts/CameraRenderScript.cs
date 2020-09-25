@@ -16,6 +16,8 @@ public class CameraRenderScript : MonoBehaviour
         Sobel,
         Distortion,
         DepthGradient,
+        VertexPosition,
+        Orientation,
     }
 
 
@@ -30,8 +32,10 @@ public class CameraRenderScript : MonoBehaviour
     public Material thinLinesMat;
     public Material mixTargetsMat;
     public Material finalMat;
+    public Material brushMat;
 
     public Texture noiseTexture;
+    public Texture brushesTexture;
 
     public Camera cam;
     public float ColWidth = 0.001f;
@@ -60,6 +64,8 @@ public class CameraRenderScript : MonoBehaviour
     RenderTexture sobelTargetColor;
     RenderTexture distortionTarget;
     RenderTexture blurTarget;
+    RenderTexture orientationTarget;
+    RenderTexture vertexPositionTarget;
     RenderTexture final;
 
     public RenderTexture objectNormals;
@@ -67,12 +73,16 @@ public class CameraRenderScript : MonoBehaviour
     public RenderTexture charactersNormals;
     public RenderTexture charactersDepth;
     public RenderTexture worldPosTexture;
+    public RenderTexture vertexPosTexture;
+    public RenderTexture orientationTexture;
 
     public Shader MapNormals;
     public Shader MapDepth;
     public Shader CharactersNormals;
     public Shader CharactersDepth;
     public Shader WorldPositionShader;
+    public Shader VertexPositionShader;
+    public Shader OrientationShader;
 
     float timer = 0.0f;
     [Range(10, 60)]
@@ -147,6 +157,8 @@ public class CameraRenderScript : MonoBehaviour
         objectNormals = new RenderTexture(width, height, 32, RenderTextureFormat.ARGBFloat);
         objectDepth = new RenderTexture(width, height, 32, RenderTextureFormat.RFloat);
         worldPosTexture = new RenderTexture(width, height, 32, RenderTextureFormat.ARGBFloat);
+        vertexPosTexture = new RenderTexture(width, height, 32, RenderTextureFormat.ARGBFloat);
+        orientationTexture = new RenderTexture(width, height, 32, RenderTextureFormat.ARGBFloat);
 
         cam = GetComponent<Camera>();
         cam.depthTextureMode = DepthTextureMode.DepthNormals;
@@ -164,6 +176,12 @@ public class CameraRenderScript : MonoBehaviour
 
         normalsTarget = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
         normalsTarget.Create();
+
+        orientationTarget = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
+        orientationTarget.Create();
+
+        vertexPositionTarget = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
+        vertexPositionTarget.Create();
 
         blurNormalsTarget = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
         blurNormalsTarget.Create();
@@ -192,7 +210,6 @@ public class CameraRenderScript : MonoBehaviour
         timer += Time.deltaTime;
         if (timer >= 1.0f / (float)frames)
         {
-
             SetupGlowCamera(objectNormals, LayerMask.GetMask("Map"));
             CharactersCamera.RenderWithShader(MapNormals, "RenderType");
             SetupGlowCamera(objectDepth, LayerMask.GetMask("Map"));
@@ -203,7 +220,12 @@ public class CameraRenderScript : MonoBehaviour
             CharactersCamera.RenderWithShader(CharactersDepth, "RenderType");
             SetupGlowCamera(worldPosTexture, LayerMask.GetMask("Map", "Characters"));
             CharactersCamera.RenderWithShader(WorldPositionShader, "RenderType");
-            timer = 0.0f;
+
+            SetupGlowCamera(vertexPosTexture, LayerMask.GetMask("Map"));
+            CharactersCamera.RenderWithShader(VertexPositionShader, "RenderType");
+            SetupGlowCamera(orientationTexture, LayerMask.GetMask("Map"));
+            CharactersCamera.RenderWithShader(OrientationShader, "RenderType");
+
 
             //Depth Texture-------------------------------------
             Graphics.Blit(source, depthTarget, depthMat);
@@ -214,10 +236,10 @@ public class CameraRenderScript : MonoBehaviour
             //--------------------------------------------------
 
             //Distortion
-            distortionMat.SetInt("_Type", 0);
-            distortionMat.SetTexture("_DistortionTexture", worldPosTexture);
-            distortionMat.SetTexture("_CameraDepth", depthTarget);
-            Graphics.Blit(colorTarget, colorDistTarget, distortionMat);
+            brushMat.SetTexture("_VertexPosTex", vertexPosTexture);
+            brushMat.SetTexture("_OrientationTex", orientationTexture);
+            brushMat.SetTexture("_BrushTex", brushesTexture);
+            Graphics.Blit(colorTarget, colorDistTarget, brushMat);
             //
 
             //blur
@@ -251,7 +273,7 @@ public class CameraRenderScript : MonoBehaviour
 
             //Distortion
             distortionMat.SetInt("_Type", 1);
-            distortionMat.SetTexture("_DistortionTexture", worldPosTexture);
+            distortionMat.SetTexture("_DistortionTexture", noiseTexture);
             distortionMat.SetTexture("_CameraDepth", depthTarget);
             Graphics.Blit(sobelTargetColor, distortionTarget, distortionMat);
             //

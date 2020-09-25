@@ -68,15 +68,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _Amplitude: 0.15
-    - _BAmplitude: 0.29
-    - _BFrequency: 14.14
-    - _BLacunarity: 0.43
-    - _BOctaves: 7
+    - _Angle: 0
+    - _BAmplitude: 1
+    - _BFrequency: 1
+    - _BLacunarity: 4
+    - _BOctaves: 6.47
     - _BPersistence: 1.75
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _Div: 2137
+    - _Div: 0.16
     - _DstBlend: 0
     - _Frequency: 170.06
     - _GlossMapScale: 1
@@ -92,12 +93,12 @@ Material:
     - _Octaves: 11.3
     - _Parallax: 0.02
     - _Persistence: 2.17
-    - _SAmplitude: 1.07
-    - _SFrequency: 1.89
-    - _SLacunarity: 1.98
-    - _SOctaves: 3
-    - _SPersistence: 0.57
-    - _ShadowIntensity: 1
+    - _SAmplitude: 1
+    - _SFrequency: 1
+    - _SLacunarity: 1.92
+    - _SOctaves: 9.6
+    - _SPersistence: 0.8
+    - _ShadowIntensity: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1

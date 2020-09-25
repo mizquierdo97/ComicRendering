@@ -158,9 +158,9 @@
 				//float depth = (depth1 + depth2 + depth3 + depth4) / 4;
 				float depth = min(depth1, min(depth2, min(depth3, depth4)));// min(1, min(depth1, min(depth2, min(depth3, depth4))) + 0.2);
 				//depth = tex2D(_CameraDepth, i.uv);
-				float size = 5.0f;
+				float size = 50.0f;
 
-				float minAmplitude = 0.0f;
+				float minAmplitude = 1.0f;
 				
 				if (noise.x <= 0.5f && noise.x >= -0.5f)
 				{
@@ -170,27 +170,28 @@
 					minAmplitude = 0.0f;
 				}
 				
-				float smallNoiseX = PerlinNormal(noise, _SOctaves, float3(0,0,0), _SFrequency, _SAmplitude * max(minAmplitude, (1 - depth * 1.7)), _SLacunarity, _SPersistence);
+				float smallNoiseX = PerlinNormal(noise, _SOctaves, float3(0, 0, 0), _SFrequency, _SAmplitude* max(minAmplitude, (1 - depth * 1.7)), _SLacunarity, _SPersistence);
 				smallNoiseX = smallNoiseX * 0.5 + 0.5;
-				float smallNoiseY = PerlinNormal(noise, _SOctaves, float3(10000, 10000, 0), _SFrequency, _SAmplitude * max(minAmplitude,(1 - depth * 1.7)), _SLacunarity, _SPersistence);
+				float smallNoiseY =PerlinNormal(noise, _SOctaves, float3(10000, 10000, 0), _SFrequency, _SAmplitude* max(minAmplitude, (1 - depth * 1.7)), _SLacunarity, _SPersistence);
 				smallNoiseY = smallNoiseY * 0.5 + 0.5;
 
 				_Intensity = 10;
 				float multiply = 1.0;
 				if (_Type == 1)
 				{
-					_Intensity = 10.0f;
+					_Intensity = 2.0f;
 					size = 1.0f;
 					multiply = clamp((smallNoiseX * 1.5), 0.5f, 1.0f);
 				}
 
 				float distortionX = clamp(smallNoiseX, -1, 1);
 				float distortionY = clamp(smallNoiseY, -1, 1);
-				fixed4 col = tex2D(_MainTex, float2(i.uv.x + distortionX * delta.x * _Intensity * depth, i.uv.y + distortionY * delta.y * _Intensity * depth));
+				fixed4 col = tex2D(_MainTex, float2(i.uv.x + distortionX * delta.x * _Intensity, i.uv.y + distortionY * delta.y * _Intensity));
 				col *= multiply;
 
 				//return depth;
 				float3 ret = distortionX;
+				float4 ret2 = tex2D(_DistortionTexture, i.uv);
 				return col;// float4(ret, 1);// float4(noise, 1);
 			}
 			ENDCG
