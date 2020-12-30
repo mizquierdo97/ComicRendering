@@ -29,35 +29,35 @@ MonoBehaviour:
     m_Settings:
       excludeSkybox: 0
   antialiasing:
-    m_Enabled: 0
+    m_Enabled: 1
     m_Settings:
       method: 1
       fxaaSettings:
-        preset: 1
+        preset: 0
       taaSettings:
-        jitterSpread: 1
-        sharpen: 0
-        stationaryBlending: 0.99
-        motionBlending: 0.22
+        jitterSpread: 0.1
+        sharpen: 0.56
+        stationaryBlending: 0.78
+        motionBlending: 0
   ambientOcclusion:
-    m_Enabled: 0
+    m_Enabled: 1
     m_Settings:
-      intensity: 0
-      radius: 1.84
+      intensity: 0.55
+      radius: 2.83
       sampleCount: 16
       downsampling: 0
       forceForwardCompatibility: 1
       ambientOnly: 0
       highPrecision: 0
   screenSpaceReflection:
-    m_Enabled: 0
+    m_Enabled: 1
     m_Settings:
       reflection:
         blendType: 0
-        reflectionQuality: 2
-        maxDistance: 100
+        reflectionQuality: 0
+        maxDistance: 82
         iterationCount: 256
-        stepSize: 3
+        stepSize: 4
         widthModifier: 0.5
         reflectionBlur: 1
         reflectBackfaces: 0
@@ -71,7 +71,7 @@ MonoBehaviour:
   depthOfField:
     m_Enabled: 0
     m_Settings:
-      focusDistance: 10
+      focusDistance: 124.67
       aperture: 5.6
       focalLength: 50
       useCameraFov: 0
@@ -100,16 +100,16 @@ MonoBehaviour:
     m_Enabled: 0
     m_Settings:
       bloom:
-        intensity: 116.47
+        intensity: 0.52
         threshold: 1.14
-        softKnee: 0.383
-        radius: 1.08
+        softKnee: 0.459
+        radius: 1
         antiFlicker: 0
       lensDirt:
-        texture: {fileID: 0}
-        intensity: 3
+        texture: {fileID: 2800000, guid: d203e6ae31c94fe40ac210feedbd88df, type: 3}
+        intensity: 12.52
   colorGrading:
-    m_Enabled: 0
+    m_Enabled: 1
     m_Settings:
       tonemapping:
         tonemapper: 0
@@ -124,7 +124,7 @@ MonoBehaviour:
         temperature: 0
         tint: 0
         hueShift: 0
-        saturation: 1
+        saturation: 0.79
         contrast: 1
       channelMixer:
         red: {x: 1, y: 0, z: 0}
@@ -138,9 +138,9 @@ MonoBehaviour:
           power: {r: 1, g: 1, b: 1, a: 0}
           offset: {r: 1, g: 1, b: 1, a: 0}
         linear:
-          lift: {r: 1, g: 1, b: 1, a: 0.000000009582218}
-          gamma: {r: 1, g: 1, b: 1, a: -0.0000000015225983}
-          gain: {r: 1, g: 1, b: 1, a: 0}
+          lift: {r: 1, g: 0.8243324, b: 0.7988743, a: 0.021978032}
+          gamma: {r: 0.6907632, g: 0.5345844, b: 1, a: -0.24175824}
+          gain: {r: 0.97898483, g: 0.9935436, b: 1, a: 0}
       curves:
         master:
           curve:
@@ -305,24 +305,24 @@ MonoBehaviour:
       lut: {fileID: 0}
       contribution: 1
   chromaticAberration:
-    m_Enabled: 0
+    m_Enabled: 1
     m_Settings:
-      spectralTexture: {fileID: 0}
-      intensity: 1
+      spectralTexture: {fileID: 2800000, guid: d203e6ae31c94fe40ac210feedbd88df, type: 3}
+      intensity: 0.201
   grain:
     m_Enabled: 0
     m_Settings:
-      colored: 1
-      intensity: 1
-      size: 1
-      luminanceContribution: 0.8
+      colored: 0
+      intensity: 0
+      size: 0.3
+      luminanceContribution: 1
   vignette:
-    m_Enabled: 0
+    m_Enabled: 1
     m_Settings:
       mode: 0
       color: {r: 0, g: 0, b: 0, a: 1}
       center: {x: 0.5, y: 0.5}
-      intensity: 0.157
+      intensity: 0.155
       smoothness: 1
       roundness: 1
       mask: {fileID: 0}

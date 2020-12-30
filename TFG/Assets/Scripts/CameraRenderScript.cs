@@ -31,7 +31,13 @@ public class CameraRenderScript : MonoBehaviour
     public Material mixTargetsMat;
     public Material finalMat;
 
+    public Color outlineColor;
+
     public Texture noiseTexture;
+    public Texture brushesTexture;
+    public float Intensity; 
+    public float IntensityHigh;
+
 
     public Camera cam;
     public float ColWidth = 0.001f;
@@ -53,6 +59,9 @@ public class CameraRenderScript : MonoBehaviour
     //RENDER TARGETS
     RenderTexture depthTarget;
     RenderTexture colorTarget;
+    RenderTexture colorDistTargetPrev;
+    RenderTexture colorDistTargetPrev2;
+    RenderTexture colorDistTargetPrev3;
     RenderTexture colorDistTarget;
     RenderTexture normalsTarget;
     RenderTexture blurNormalsTarget;
@@ -159,6 +168,15 @@ public class CameraRenderScript : MonoBehaviour
         colorTarget = new RenderTexture(width, height, 16, RenderTextureFormat.ARGBFloat);
         colorTarget.Create();
 
+        colorDistTargetPrev = new RenderTexture(width, height, 16, RenderTextureFormat.ARGBFloat);
+        colorDistTargetPrev.Create();
+
+        colorDistTargetPrev2 = new RenderTexture(width, height, 16, RenderTextureFormat.ARGBFloat);
+        colorDistTargetPrev2.Create();
+
+        colorDistTargetPrev3 = new RenderTexture(width, height, 16, RenderTextureFormat.ARGBFloat);
+        colorDistTargetPrev3.Create();
+
         colorDistTarget = new RenderTexture(width, height, 16, RenderTextureFormat.ARGBFloat);
         colorDistTarget.Create();
 
@@ -214,16 +232,39 @@ public class CameraRenderScript : MonoBehaviour
             //--------------------------------------------------
 
             //Distortion
+            distortionMat.SetFloat("_Intensity", Intensity);
             distortionMat.SetInt("_Type", 0);
-            distortionMat.SetTexture("_DistortionTexture", worldPosTexture);
+            distortionMat.SetTexture("_WorldPosTex", worldPosTexture);
+            distortionMat.SetTexture("_DistortionTexture", brushesTexture);
             distortionMat.SetTexture("_CameraDepth", depthTarget);
-            Graphics.Blit(colorTarget, colorDistTarget, distortionMat);
+            Graphics.Blit(colorTarget, colorDistTargetPrev, distortionMat);
+
+            distortionMat.SetFloat("_Intensity", Intensity);
+            distortionMat.SetInt("_Type", 2);
+            distortionMat.SetTexture("_WorldPosTex", worldPosTexture);
+            distortionMat.SetTexture("_DistortionTexture", brushesTexture);
+            distortionMat.SetTexture("_CameraDepth", depthTarget);
+            Graphics.Blit(colorDistTargetPrev, colorDistTargetPrev2, distortionMat);
+
+            distortionMat.SetFloat("_Intensity", Intensity);
+            distortionMat.SetInt("_Type", 3);
+            distortionMat.SetTexture("_WorldPosTex", worldPosTexture);
+            distortionMat.SetTexture("_DistortionTexture", brushesTexture);
+            distortionMat.SetTexture("_CameraDepth", depthTarget);
+            Graphics.Blit(colorDistTargetPrev2, colorDistTargetPrev3, distortionMat);
+
+            distortionMat.SetFloat("_Intensity", IntensityHigh);
+            distortionMat.SetInt("_Type", 1);
+            distortionMat.SetTexture("_WorldPosTex", worldPosTexture);
+            distortionMat.SetTexture("_DistortionTexture", brushesTexture);
+            distortionMat.SetTexture("_CameraDepth", depthTarget);
+            Graphics.Blit(colorDistTargetPrev3, colorDistTarget, distortionMat);
             //
 
             //blur
-           // gaussianProcessMat.SetTexture("_CameraDepth", depthTarget);
-           // gaussianProcessMat.SetFloat("_Intensity", outlineBlurInt);
-           // Graphics.Blit(colorDistTarget, blurColorTarget, gaussianProcessMat);
+            // gaussianProcessMat.SetTexture("_CameraDepth", depthTarget);
+            // gaussianProcessMat.SetFloat("_Intensity", outlineBlurInt);
+            // Graphics.Blit(colorDistTarget, blurColorTarget, gaussianProcessMat);
             //
 
             //Normals Texture-------------------------------------
@@ -251,15 +292,16 @@ public class CameraRenderScript : MonoBehaviour
 
             //Distortion
             distortionMat.SetInt("_Type", 1);
-            distortionMat.SetTexture("_DistortionTexture", worldPosTexture);
+            distortionMat.SetTexture("_DistortionTexture", noiseTexture);
             distortionMat.SetTexture("_CameraDepth", depthTarget);
+            distortionMat.SetTexture("_BrushesTexture", brushesTexture);
             Graphics.Blit(sobelTargetColor, distortionTarget, distortionMat);
             //
 
             //Mix Original Tex + outline ----------------------------
             finalMat.SetTexture("_CameraDepth", depthTarget);
             finalMat.SetTexture("_OutlineTex", distortionTarget);
-            finalMat.SetColor("_OutlineColor", Color.black);
+            finalMat.SetColor("_OutlineColor", outlineColor);
             Graphics.Blit(colorDistTarget, final, finalMat);
             //-------------------------------------------------------
         }

@@ -14,84 +14,10 @@
 
 		CGINCLUDE
 
-		//NOISE GENERATION
 
-		void FAST32_hash_3D(float3 gridcell,
-			out float4 lowz_hash_0,
-			out float4 lowz_hash_1,
-			out float4 lowz_hash_2,
-			out float4 highz_hash_0,
-			out float4 highz_hash_1,
-			out float4 highz_hash_2)		//	generates 3 random numbers for each of the 8 cell corners
-	{
+		
 
-
-		const float2 OFFSET = float2(50.0, 161.0);
-		const float DOMAIN = 69.0;
-		const float3 SOMELARGEFLOATS = float3(635.298681, 682.357502, 668.926525);
-		const float3 ZINC = float3(48.500388, 65.294118, 63.934599);
-
-		//	truncate the domain
-		gridcell.xyz = gridcell.xyz - floor(gridcell.xyz * (1.0 / DOMAIN)) * DOMAIN;
-		float3 gridcell_inc1 = step(gridcell, float3(DOMAIN - 1.5, DOMAIN - 1.5, DOMAIN - 1.5)) * (gridcell + 1.0);
-
-		//	calculate the noise
-		float4 P = float4(gridcell.xy, gridcell_inc1.xy) + OFFSET.xyxy;
-		P *= P;
-		P = P.xzxz * P.yyww;
-		float3 lowz_mod = float3(1.0 / (SOMELARGEFLOATS.xyz + gridcell.zzz * ZINC.xyz));
-		float3 highz_mod = float3(1.0 / (SOMELARGEFLOATS.xyz + gridcell_inc1.zzz * ZINC.xyz));
-		lowz_hash_0 = frac(P * lowz_mod.xxxx);
-		highz_hash_0 = frac(P * highz_mod.xxxx);
-		lowz_hash_1 = frac(P * lowz_mod.yyyy);
-		highz_hash_1 = frac(P * highz_mod.yyyy);
-		lowz_hash_2 = frac(P * lowz_mod.zzzz);
-		highz_hash_2 = frac(P * highz_mod.zzzz);
-	}
-
-	float3 Interpolation_C2(float3 x) { return x * x * x * (x * (x * 6.0 - 15.0) + 10.0); }
-
-	float Perlin3D(float3 P)
-	{
-		//	establish our grid cell and unit position
-		float3 Pi = floor(P);
-		float3 Pf = P - Pi;
-		float3 Pf_min1 = Pf - 1.0;
-
-		float4 hashx0, hashy0, hashz0, hashx1, hashy1, hashz1;
-		FAST32_hash_3D(Pi, hashx0, hashy0, hashz0, hashx1, hashy1, hashz1);
-
-		//	calculate the gradients
-		float4 grad_x0 = hashx0 - 0.49999;
-		float4 grad_y0 = hashy0 - 0.49999;
-		float4 grad_z0 = hashz0 - 0.49999;
-		float4 grad_x1 = hashx1 - 0.49999;
-		float4 grad_y1 = hashy1 - 0.49999;
-		float4 grad_z1 = hashz1 - 0.49999;
-		float4 grad_results_0 = rsqrt(grad_x0 * grad_x0 + grad_y0 * grad_y0 + grad_z0 * grad_z0) * (float2(Pf.x, Pf_min1.x).xyxy * grad_x0 + float2(Pf.y, Pf_min1.y).xxyy * grad_y0 + Pf.zzzz * grad_z0);
-		float4 grad_results_1 = rsqrt(grad_x1 * grad_x1 + grad_y1 * grad_y1 + grad_z1 * grad_z1) * (float2(Pf.x, Pf_min1.x).xyxy * grad_x1 + float2(Pf.y, Pf_min1.y).xxyy * grad_y1 + Pf_min1.zzzz * grad_z1);
-
-		//	Classic Perlin Interpolation
-		float3 blend = Interpolation_C2(Pf);
-		float4 res0 = lerp(grad_results_0, grad_results_1, blend.z);
-		float2 res1 = lerp(res0.xy, res0.zw, blend.y);
-		float final = lerp(res1.x, res1.y, blend.x);
-		final *= 1.1547005383792515290182975610039;		//	(optionally) scale things to a strict -1.0->1.0 range    *= 1.0/sqrt(0.75)
-		return final;
-	}
-	float PerlinNormal(float3 p, int octaves, float3 offset, float frequency, float amplitude, float lacunarity, float persistence)
-	{
-		float sum = 0;
-		for (int i = 0; i < octaves; i++)
-		{
-			float h = 0;
-			h = Perlin3D((p + offset) * frequency);
-			sum += h * amplitude;
-			frequency *= lacunarity;
-			amplitude *= persistence;
-		}
-		return sum;
-	}
+	
 
 	//
 
@@ -114,7 +40,8 @@
 			sampler2D _DistortionTexture;
 			int _Type;
 			float _Intensity;
-
+			float _IntensityHigh;
+			sampler2D _WorldPosTex;
 
 			fixed _SOctaves;
 			float _SFrequency;
@@ -123,6 +50,63 @@
 			float _SLacunarity;
 			float _SPersistence;
 			uniform float4 _MainTex_TexelSize;
+
+			float3 Saturation(float _saturation, float3 col)
+			{
+				float P = sqrt(col.r * col.r + col.g * col.g + col.b * col.b);
+				return float3(P + ((col.r - P) * _saturation), P + ((col.g - P) * _saturation), P + ((col.b - P) * _saturation));
+				return float3(0.5 * (1 - _saturation) + col.r * _saturation, 0.5 * (1 - _saturation) + col.g * _saturation, 0.5 * (1 - _saturation) + col.b * _saturation);
+			}
+
+
+			float3 rgb_to_hsv_no_clip(float3 RGB)
+			{
+				float3 HSV;
+
+				float minChannel, maxChannel;
+				if (RGB.x > RGB.y) {
+					maxChannel = RGB.x;
+					minChannel = RGB.y;
+				}
+				else {
+					maxChannel = RGB.y;
+					minChannel = RGB.x;
+				}
+
+				if (RGB.z > maxChannel) maxChannel = RGB.z;
+				if (RGB.z < minChannel) minChannel = RGB.z;
+
+				HSV.xy = 0;
+				HSV.z = maxChannel;
+				float delta = maxChannel - minChannel;             //Delta RGB value
+				if (delta != 0) {                    // If gray, leave H  S at zero
+					HSV.y = delta / HSV.z;
+					float3 delRGB;
+					delRGB = (HSV.zzz - RGB + 3 * delta) / (6.0 * delta);
+					if (RGB.x == HSV.z) HSV.x = delRGB.z - delRGB.y;
+					else if (RGB.y == HSV.z) HSV.x = (1.0 / 3.0) + delRGB.x - delRGB.z;
+					else if (RGB.z == HSV.z) HSV.x = (2.0 / 3.0) + delRGB.y - delRGB.x;
+				}
+				return (HSV);
+			}
+			float3 hsv_to_rgb(float3 HSV)
+			{
+				float3 RGB = HSV.z;
+
+				float var_h = HSV.x * 6;
+				float var_i = floor(var_h);   // Or ... var_i = floor( var_h )
+				float var_1 = HSV.z * (1.0 - HSV.y);
+				float var_2 = HSV.z * (1.0 - HSV.y * (var_h - var_i));
+				float var_3 = HSV.z * (1.0 - HSV.y * (1 - (var_h - var_i)));
+				if (var_i == 0) { RGB = float3(HSV.z, var_3, var_1); }
+				else if (var_i == 1) { RGB = float3(var_2, HSV.z, var_1); }
+				else if (var_i == 2) { RGB = float3(var_1, HSV.z, var_3); }
+				else if (var_i == 3) { RGB = float3(var_1, var_2, HSV.z); }
+				else if (var_i == 4) { RGB = float3(var_3, var_1, HSV.z); }
+				else { RGB = float3(HSV.z, var_1, var_2); }
+
+				return (RGB);
+			}
 
 			struct appdata
 			{
@@ -149,49 +133,81 @@
 			fixed4 frag (v2f i) : SV_Target
 			{
 				float2 delta = _MainTex_TexelSize;
+				float intensity = _Intensity;
+				float size = 4.0f;
+				if (_Type == 1)
+				{
+					size = 0.8f;
+					intensity = _Intensity;
+				}
 
-				float3 noise = tex2D(_DistortionTexture, i.uv);
-				float depth1 = tex2D(_CameraDepth, i.uv + float2(delta.x, delta.y) );
+				float3 wp = tex2D(_WorldPosTex, i.uv);
+				float3 noise = tex2D(_DistortionTexture,i.uv * size/* wp.xy * 0.1f*/);
+				float depth1 = tex2D(_CameraDepth, i.uv + float2(delta.x, delta.y));
 				float depth2 = tex2D(_CameraDepth, i.uv + float2(-delta.x, delta.y));
 				float depth3 = tex2D(_CameraDepth, i.uv + float2(delta.x, -delta.y) );
 				float depth4 = tex2D(_CameraDepth, i.uv + float2(-delta.x, -delta.y));
 				//float depth = (depth1 + depth2 + depth3 + depth4) / 4;
 				float depth = min(depth1, min(depth2, min(depth3, depth4)));// min(1, min(depth1, min(depth2, min(depth3, depth4))) + 0.2);
 				//depth = tex2D(_CameraDepth, i.uv);
-				float size = 5.0f;
+				//float size = 5.0f;
 
 				float minAmplitude = 0.0f;
 				
-				if (noise.x <= 0.5f && noise.x >= -0.5f)
-				{
-					noise.x = i.uv.x * 10;
-					noise.y = i.uv.y * 10;
-					noise.z = i.uv.y * 10;
-					minAmplitude = 0.0f;
-				}
-				
-				float smallNoiseX = PerlinNormal(noise, _SOctaves, float3(0,0,0), _SFrequency, _SAmplitude * max(minAmplitude, (1 - depth * 1.7)), _SLacunarity, _SPersistence);
-				smallNoiseX = smallNoiseX * 0.5 + 0.5;
-				float smallNoiseY = PerlinNormal(noise, _SOctaves, float3(10000, 10000, 0), _SFrequency, _SAmplitude * max(minAmplitude,(1 - depth * 1.7)), _SLacunarity, _SPersistence);
-				smallNoiseY = smallNoiseY * 0.5 + 0.5;
+				float offset = 0.25;
 
-				_Intensity = 10;
-				float multiply = 1.0;
+
+				fixed NoiseX = noise.x;
+				fixed NoiseY = noise.y;
+
+				if (_Type == 2)
+				{
+					NoiseX = noise.y;
+					NoiseY = noise.z;
+				}
+				if (_Type == 3)
+				{
+					NoiseX = noise.z;
+					NoiseY = noise.x;
+				}
+				if (_Type != 1)
+				{
+					NoiseX = clamp(NoiseX - offset, 0, 1);
+					NoiseX = NoiseX * 2 - 1;
+					NoiseY = clamp(NoiseY - offset, 0, 1);
+					NoiseY = NoiseY * 2 - 1;
+				}
 				if (_Type == 1)
 				{
-					_Intensity = 10.0f;
-					size = 1.0f;
-					multiply = clamp((smallNoiseX * 1.5), 0.5f, 1.0f);
+					float power = 20;
+					NoiseX = pow(NoiseX, power);
+					NoiseY = pow(NoiseY, power);
 				}
+				
+				float distortionX = clamp(NoiseX, -1, 1);
+				float distortionY = clamp(NoiseY, -1, 1);
+				depth = tex2D(_CameraDepth,float2(i.uv.x + distortionX * delta.x * intensity, i.uv.y + distortionY * delta.y * intensity));
+				fixed4 col = tex2D(_MainTex, float2(i.uv.x + distortionX * delta.x * intensity/* * depth*/, i.uv.y + distortionY * delta.y * intensity/* * depth*/));
+				//col *= multiply;
+				float3 noiseColor;
+				if (_Type == 0)
+				{
+					float3 a;
+					float depthclamp = (pow(depth * 20, 0.7));
+					noiseColor = tex2D(_DistortionTexture, i.uv / clamp(depthclamp, 0, 3)/* wp.xy * 0.1f*/);
+					noiseColor = clamp(noiseColor - 0.2, 0, 1);
+					noiseColor = pow(noiseColor, 1);
+					noiseColor = noiseColor * 2 - 1;
+					//saturation = max(1, saturation * _ShadowIntensity);
+					float3 hsv = rgb_to_hsv_no_clip(Saturation(clamp(noiseColor.x * 1, 0.9,1.2), col.rgb));
+					hsv.x += ( noiseColor *1) / 8;
+					if (hsv.x > 1.0) { hsv.x -= 1.0; }
+					col.xyz = half3(hsv_to_rgb(hsv)) ;
 
-				float distortionX = clamp(smallNoiseX, -1, 1);
-				float distortionY = clamp(smallNoiseY, -1, 1);
-				fixed4 col = tex2D(_MainTex, float2(i.uv.x + distortionX * delta.x * _Intensity * depth, i.uv.y + distortionY * delta.y * _Intensity * depth));
-				col *= multiply;
-
+				}
 				//return depth;
-				float3 ret = distortionX;
-				return col;// float4(ret, 1);// float4(noise, 1);
+			
+				return col;// float4(depth.x, depth.x, depth.x, 1);// float4(noiseColor, 1);// float4(noise, 1);
 			}
 			ENDCG
 		}
