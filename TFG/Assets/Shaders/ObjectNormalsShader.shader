@@ -11,7 +11,10 @@ Shader "Custom/ObjectNormalShader" {
 		  #pragma surface surf WrapLambert vertex:vert
 
 		half4 LightingWrapLambert(SurfaceOutput s, half3 lightDir, half atten) {
-			return 0;
+					fixed4 c;
+		c.rgb = s.Albedo;
+		c.a = 1;
+		return c;
 		}
 		  struct Input {
 			  float2 uv_MainTex;
@@ -26,7 +29,7 @@ Shader "Custom/ObjectNormalShader" {
 		c.rgb = s.Albedo;
 		c.a = 1;
 
-		return c;
+		return 0;
 	}
 
 		  void vert(inout appdata_full v, out Input o) {

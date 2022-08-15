@@ -43,6 +43,7 @@
 	{
 	float characterDepth = tex2D(_CharacterDepth, i.uv).r;
 	float mapDepth = tex2D(_MapDepth, i.uv).r;
+	return tex2D(_MapNormals, i.uv);
 	if (mapDepth > characterDepth)
 	{
 		return tex2D(_MapNormals, i.uv);

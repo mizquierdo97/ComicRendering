@@ -233,32 +233,32 @@ public class CameraRenderScript : MonoBehaviour
 
             //Distortion
             distortionMat.SetFloat("_Intensity", Intensity);
-            distortionMat.SetInt("_Type", 0);
-            distortionMat.SetTexture("_WorldPosTex", worldPosTexture);
-            distortionMat.SetTexture("_DistortionTexture", brushesTexture);
-            distortionMat.SetTexture("_CameraDepth", depthTarget);
-            Graphics.Blit(colorTarget, colorDistTargetPrev, distortionMat);
-
-            distortionMat.SetFloat("_Intensity", Intensity);
-            distortionMat.SetInt("_Type", 2);
-            distortionMat.SetTexture("_WorldPosTex", worldPosTexture);
-            distortionMat.SetTexture("_DistortionTexture", brushesTexture);
-            distortionMat.SetTexture("_CameraDepth", depthTarget);
-            Graphics.Blit(colorDistTargetPrev, colorDistTargetPrev2, distortionMat);
-
-            distortionMat.SetFloat("_Intensity", Intensity);
-            distortionMat.SetInt("_Type", 3);
-            distortionMat.SetTexture("_WorldPosTex", worldPosTexture);
-            distortionMat.SetTexture("_DistortionTexture", brushesTexture);
-            distortionMat.SetTexture("_CameraDepth", depthTarget);
-            Graphics.Blit(colorDistTargetPrev2, colorDistTargetPrev3, distortionMat);
-
-            distortionMat.SetFloat("_Intensity", IntensityHigh);
             distortionMat.SetInt("_Type", 1);
             distortionMat.SetTexture("_WorldPosTex", worldPosTexture);
-            distortionMat.SetTexture("_DistortionTexture", brushesTexture);
+            distortionMat.SetTexture("_BrushesTexture", brushesTexture);
             distortionMat.SetTexture("_CameraDepth", depthTarget);
-            Graphics.Blit(colorDistTargetPrev3, colorDistTarget, distortionMat);
+            Graphics.Blit(colorTarget, colorDistTarget, distortionMat);
+
+            //distortionMat.SetFloat("_Intensity", Intensity);
+            //distortionMat.SetInt("_Type", 2);
+            //distortionMat.SetTexture("_WorldPosTex", worldPosTexture);
+            //distortionMat.SetTexture("_DistortionTexture", brushesTexture);
+            //distortionMat.SetTexture("_CameraDepth", depthTarget);
+            //Graphics.Blit(colorDistTargetPrev, colorDistTargetPrev2, distortionMat);
+
+            //distortionMat.SetFloat("_Intensity", Intensity);
+            //distortionMat.SetInt("_Type", 3);
+            //distortionMat.SetTexture("_WorldPosTex", worldPosTexture);
+            //distortionMat.SetTexture("_DistortionTexture", brushesTexture);
+            //distortionMat.SetTexture("_CameraDepth", depthTarget);
+            //Graphics.Blit(colorDistTargetPrev2, colorDistTargetPrev3, distortionMat);
+
+            //distortionMat.SetFloat("_Intensity", IntensityHigh);
+            //distortionMat.SetInt("_Type", 1);
+            //distortionMat.SetTexture("_WorldPosTex", worldPosTexture);
+            //distortionMat.SetTexture("_DistortionTexture", brushesTexture);
+            //distortionMat.SetTexture("_CameraDepth", depthTarget);
+            //Graphics.Blit(colorDistTargetPrev, colorDistTarget, distortionMat);
             //
 
             //blur
@@ -292,6 +292,7 @@ public class CameraRenderScript : MonoBehaviour
 
             //Distortion
             distortionMat.SetInt("_Type", 1);
+            distortionMat.SetFloat("_Intensity", Intensity);
             distortionMat.SetTexture("_DistortionTexture", noiseTexture);
             distortionMat.SetTexture("_CameraDepth", depthTarget);
             distortionMat.SetTexture("_BrushesTexture", brushesTexture);

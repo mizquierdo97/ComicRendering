@@ -10,7 +10,7 @@ Shader "Custom/ObjectDepthShader" {
 		  #pragma surface surf WrapLambert vertex:vert
 
 		half4 LightingWrapLambert(SurfaceOutput s, half3 lightDir, half atten) {
-		return 0.5;
+		return 0;
 		}
 		  struct Input {
 			  float2 uv_MainTex;

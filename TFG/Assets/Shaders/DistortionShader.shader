@@ -135,7 +135,7 @@
 				float2 delta = _MainTex_TexelSize;
 				float intensity = _Intensity;
 				float size = 4.0f;
-				if (_Type == 1)
+				//if (_Type == 1)
 				{
 					size = 0.8f;
 					intensity = _Intensity;
@@ -177,9 +177,9 @@
 					NoiseY = clamp(NoiseY - offset, 0, 1);
 					NoiseY = NoiseY * 2 - 1;
 				}
-				if (_Type == 1)
+				//if (_Type == 1)
 				{
-					float power = 20;
+					float power = 1;
 					NoiseX = pow(NoiseX, power);
 					NoiseY = pow(NoiseY, power);
 				}
@@ -190,24 +190,24 @@
 				fixed4 col = tex2D(_MainTex, float2(i.uv.x + distortionX * delta.x * intensity/* * depth*/, i.uv.y + distortionY * delta.y * intensity/* * depth*/));
 				//col *= multiply;
 				float3 noiseColor;
-				if (_Type == 0)
-				{
-					float3 a;
-					float depthclamp = (pow(depth * 20, 0.7));
-					noiseColor = tex2D(_DistortionTexture, i.uv / clamp(depthclamp, 0, 3)/* wp.xy * 0.1f*/);
-					noiseColor = clamp(noiseColor - 0.2, 0, 1);
-					noiseColor = pow(noiseColor, 1);
-					noiseColor = noiseColor * 2 - 1;
-					//saturation = max(1, saturation * _ShadowIntensity);
-					float3 hsv = rgb_to_hsv_no_clip(Saturation(clamp(noiseColor.x * 1, 0.9,1.2), col.rgb));
-					hsv.x += ( noiseColor *1) / 8;
-					if (hsv.x > 1.0) { hsv.x -= 1.0; }
-					col.xyz = half3(hsv_to_rgb(hsv)) ;
+				//if (_Type == 0)
+				//{
+				//	float3 a;
+				//	float depthclamp = (pow(depth * 20, 0.7));
+				//	noiseColor = tex2D(_DistortionTexture, i.uv / clamp(depthclamp, 0, 3)/* wp.xy * 0.1f*/);
+				//	noiseColor = clamp(noiseColor - 0.2, 0, 1);
+				//	noiseColor = pow(noiseColor, 1);
+				//	noiseColor = noiseColor * 2 - 1;
+				//	//saturation = max(1, saturation * _ShadowIntensity);
+				//	float3 hsv = rgb_to_hsv_no_clip(Saturation(clamp(noiseColor.x * 1, 0.9,1.2), col.rgb));
+				//	hsv.x += ( noiseColor *1) / 8;
+				//	if (hsv.x > 1.0) { hsv.x -= 1.0; }
+				//	col.xyz = half3(hsv_to_rgb(hsv)) ;
 
-				}
+				//}
 				//return depth;
 			
-				return col;// float4(depth.x, depth.x, depth.x, 1);// float4(noiseColor, 1);// float4(noise, 1);
+				return  col;// float4(noise, 1);
 			}
 			ENDCG
 		}
